@@ -24,9 +24,18 @@ jobs:
         redis-image: [ "redis:6.0.20", "redis:6.2.0", "redis:7.2.4" ]
 
     env:
-      XUXIAOWEI_REDIS_PASSWORD: ""
+      GATEWAY_SHIELD_DATABASE_USERNAME: root
+      GATEWAY_SHIELD_DATABASE_PASSWORD: xuxiaowei.com.cn
+      GATEWAY_SHIELD_DATABASE: gateway_shield
+
+      GATEWAY_SHIELD_REDIS_PASSWORD: ""
 
     services:
+      mysql:
+        image: mysql:8.0.36
+        env:
+          MYSQL_DATABASE: ${{ env.GATEWAY_SHIELD_DATABASE }}
+          MYSQL_ROOT_PASSWORD: ${{ env.GATEWAY_SHIELD_DATABASE_PASSWORD }}
       redis:
         image: ${{ matrix.redis-image }}
 
@@ -46,14 +55,19 @@ jobs:
         shell: sh
         run: |
           docker ps
+          GATEWAY_SHIELD_DATABASE_HOST=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -qf 'ancestor=mysql:8.0.36')`
           GATEWAY_SHIELD_REDIS_HOST=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -qf 'ancestor=${{ matrix.redis-image }}')`
+          echo "GATEWAY_SHIELD_DATABASE_HOST=$GATEWAY_SHIELD_DATABASE_HOST"
+          echo "GATEWAY_SHIELD_DATABASE_HOST=$GATEWAY_SHIELD_DATABASE_HOST" >> $GITHUB_ENV
           echo "GATEWAY_SHIELD_REDIS_HOST=$GATEWAY_SHIELD_REDIS_HOST"
           echo "GATEWAY_SHIELD_REDIS_HOST=$GATEWAY_SHIELD_REDIS_HOST" >> $GITHUB_ENV
+          echo ${{ env.GATEWAY_SHIELD_DATABASE_HOST }}
           echo ${{ env.GATEWAY_SHIELD_REDIS_HOST }}
 
       - name: Get ENV
         shell: sh
         run: |
+          echo ${{ env.GATEWAY_SHIELD_DATABASE_HOST }}
           echo ${{ env.GATEWAY_SHIELD_REDIS_HOST }}
 
       - name: Build with Maven
