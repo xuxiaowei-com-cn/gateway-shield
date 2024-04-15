@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: gateway-shield
+
+---
+
+spring:
+  data:
+    redis:
+      host: ${GATEWAY_SHIELD_REDIS_HOST:127.0.0.1}
+      port: ${GATEWAY_SHIELD_REDIS_PORT:6379}
+      database: ${GATEWAY_SHIELD_REDIS_DATABASE:8}
+      password: ${GATEWAY_SHIELD_REDIS_PASSWORD:}
