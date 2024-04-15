@@ -16,3 +16,17 @@ spring:
       port: ${GATEWAY_SHIELD_REDIS_PORT:6379}
       database: ${GATEWAY_SHIELD_REDIS_DATABASE:8}
       password: ${GATEWAY_SHIELD_REDIS_PASSWORD:}
+
+---
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: baidu
+          uri: https://www.baidu.com
+          predicates:
+            # http://baidu.localdev.me:8080/sugrec
+            # 测试类中的 server.port 为 0
+            # * 代表所有端口
+            - Host=baidu.localdev.me:*
