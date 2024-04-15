@@ -1,13 +1,13 @@
 package cn.com.xuxiaowei.shield.gateway;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-@SpringBootTest
-class GatewayApplicationTests {
+@Slf4j
+public class GatewayApplicationTests {
 
-	@Test
-	void contextLoads() {
+	public static void queryForList(JdbcTemplate jdbcTemplate) {
+		jdbcTemplate.queryForList("select * from gateway_shield_log").forEach(System.out::println);
 	}
 
 }

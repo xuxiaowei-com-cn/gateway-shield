@@ -1,5 +1,5 @@
 server:
-  port: ${GATEWAY_SHIELD_PORT:8080}
+  port: ${GATEWAY_SHIELD_PORT:45450}
 
 ---
 
@@ -55,14 +55,14 @@ spring:
         - id: baidu
           uri: https://www.baidu.com
           predicates:
-            # http://baidu.localdev.me:8080/sugrec
+            # http://baidu.localdev.me:45450/sugrec
             # 测试类中的 server.port 为 0
             # * 代表所有端口
             - Host=baidu.localdev.me:*
         - id: demo
           uri: http://localhost:45678
           predicates:
-            # http://demo.localdev.me:8080
+            # http://demo.localdev.me:45450
             # 测试类中的 server.port 为 0
             # * 代表所有端口
             - Host=demo.localdev.me:*

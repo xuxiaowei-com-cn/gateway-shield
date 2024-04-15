@@ -1,5 +1,6 @@
 package cn.com.xuxiaowei.shield.gateway.filter;
 
+import cn.com.xuxiaowei.shield.gateway.GatewayApplicationTests;
 import cn.com.xuxiaowei.shield.gateway.utils.FileUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -29,6 +31,9 @@ public class LogWebFilterTests {
 
 	@LocalServerPort
 	private int serverPort;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
 	private ConfigurableEnvironment environment;
@@ -89,6 +94,8 @@ public class LogWebFilterTests {
 		}
 
 		assertTrue(contains);
+
+		GatewayApplicationTests.queryForList(jdbcTemplate);
 	}
 
 }

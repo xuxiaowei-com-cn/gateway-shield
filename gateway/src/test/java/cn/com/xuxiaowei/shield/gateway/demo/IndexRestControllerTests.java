@@ -1,12 +1,15 @@
 package cn.com.xuxiaowei.shield.gateway.demo;
 
+import cn.com.xuxiaowei.shield.gateway.GatewayApplicationTests;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -26,6 +29,9 @@ class IndexRestControllerTests {
 
 	@LocalServerPort
 	private int serverPort;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	@SneakyThrows
 	@Test
@@ -49,6 +55,8 @@ class IndexRestControllerTests {
 
 		assertEquals(List.of(proto), map.get("x-forwarded-proto"));
 		assertEquals(List.of(host), map.get("x-forwarded-host"));
+
+		GatewayApplicationTests.queryForList(jdbcTemplate);
 	}
 
 }

@@ -1,14 +1,17 @@
 package cn.com.xuxiaowei.shield.gateway.routes;
 
+import cn.com.xuxiaowei.shield.gateway.GatewayApplicationTests;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -26,6 +29,9 @@ class BaiduTests {
 
 	@LocalServerPort
 	private int serverPort;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	@SneakyThrows
 	@Test
@@ -52,6 +58,8 @@ class BaiduTests {
 		assertEquals(0, map.get("err_no"));
 		assertEquals("", map.get("errmsg"));
 		assertNotNull(map.get("queryid"));
+
+		GatewayApplicationTests.queryForList(jdbcTemplate);
 	}
 
 }

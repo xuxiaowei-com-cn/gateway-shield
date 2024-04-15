@@ -1,5 +1,5 @@
 server:
-  port: ${GATEWAY_SHIELD_PORT:8080}
+  port: ${GATEWAY_SHIELD_PORT:45450}
 
 ---
 

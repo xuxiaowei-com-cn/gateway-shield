@@ -1,12 +1,15 @@
 package cn.com.xuxiaowei.shield.gateway.filter;
 
+import cn.com.xuxiaowei.shield.gateway.GatewayApplicationTests;
 import cn.com.xuxiaowei.shield.gateway.constant.LogConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -26,6 +29,9 @@ public class RequestHeaderGlobalFilterTests {
 
 	@LocalServerPort
 	private int serverPort;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	@Test
 	void filter() throws IOException {
@@ -51,6 +57,8 @@ public class RequestHeaderGlobalFilterTests {
 		assertEquals(1, map.get(LogConstants.G_REQUEST_ID.toLowerCase()).size());
 		assertEquals(1, map.get(LogConstants.G_HOST_NAME.toLowerCase()).size());
 		assertEquals(1, map.get(LogConstants.G_HOST_ADDRESS.toLowerCase()).size());
+
+		GatewayApplicationTests.queryForList(jdbcTemplate);
 	}
 
 }
