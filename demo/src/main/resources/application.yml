@@ -4,3 +4,4 @@ server:
 logging:
   level:
     web: debug
+    cn.com.xuxiaowei: debug
