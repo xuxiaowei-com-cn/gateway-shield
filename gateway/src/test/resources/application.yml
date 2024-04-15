@@ -59,3 +59,10 @@ spring:
             # 测试类中的 server.port 为 0
             # * 代表所有端口
             - Host=baidu.localdev.me:*
+        - id: demo
+          uri: http://localhost:45678
+          predicates:
+            # http://demo.localdev.me:8080
+            # 测试类中的 server.port 为 0
+            # * 代表所有端口
+            - Host=demo.localdev.me:*

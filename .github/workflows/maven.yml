@@ -71,10 +71,21 @@ jobs:
           echo ${{ env.GATEWAY_SHIELD_REDIS_HOST }}
 
       - name: Build with Maven
-        run: mvn clean package source:jar javadoc:jar -U -DskipTests=false
+        run: mvn clean package source:jar javadoc:jar -U -DskipTests=true
+
+      - name: Run demo
+        run: |
+          nohup java -jar demo/target/demo-0.0.1-SNAPSHOT.jar > nohup-demo.out 2>&1 &
+          sleep 20s
+          cat nohup-demo.out
+          curl "http://127.0.0.1:45678" && echo
+          cat nohup-demo.out
+
+      - name: Test
+        run: mvn test -DskipTests=false
 
       - name: JaCoCo Report
-        run: mvn jacoco:report
+        run: mvn jacoco:report -pl gateway
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4

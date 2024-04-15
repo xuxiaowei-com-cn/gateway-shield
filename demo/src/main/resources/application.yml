@@ -1,0 +1,6 @@
+server:
+  port: 45678
+
+logging:
+  level:
+    web: debug

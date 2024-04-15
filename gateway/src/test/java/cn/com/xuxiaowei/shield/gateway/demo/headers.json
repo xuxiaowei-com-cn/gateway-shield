@@ -1,0 +1,29 @@
+{
+  "content-length": [
+    "0"
+  ],
+  "x-forwarded-proto": [
+    "http"
+  ],
+  "x-forwarded-host": [
+    "demo.localdev.me:60933"
+  ],
+  "host": [
+    "localhost:45678"
+  ],
+  "x-forwarded-port": [
+    "60933"
+  ],
+  "x-forwarded-for": [
+    "127.0.0.1"
+  ],
+  "forwarded": [
+    "proto=http;host=\"demo.localdev.me:60933\";for=\"127.0.0.1:60939\""
+  ],
+  "accept": [
+    "application/json, application/*+json"
+  ],
+  "user-agent": [
+    "Java/17.0.3"
+  ]
+}
