@@ -26,6 +26,26 @@ spring:
     username: ${GATEWAY_SHIELD_DATABASE_USERNAME:root}
     password: ${GATEWAY_SHIELD_DATABASE_PASSWORD:xuxiaowei.com.cn}
 
+logging:
+  level:
+    cn.com.xuxiaowei: debug
+    # 记录请求地址、转发目的地
+    org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping: debug
+    # 异常日志
+    org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler: debug
+    # 当前应用响应数据（非转发数据）
+    org.springframework.core.codec.CharSequenceEncoder: debug
+  pattern:
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %X{C-Request-Id} %clr(:){faint} %X{C-IP} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+    file: "%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %X{C-Request-Id} : %X{C-IP} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+  file:
+    name: /logs/${spring.application.name}/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-file-size: 50MB
+      max-history: 365
+      file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd}.%i.log.gz
+
 ---
 
 spring:
