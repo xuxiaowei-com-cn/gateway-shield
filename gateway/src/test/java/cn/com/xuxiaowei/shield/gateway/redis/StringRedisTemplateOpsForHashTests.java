@@ -138,14 +138,18 @@ public class StringRedisTemplateOpsForHashTests {
 		assertEquals(keys.size(), 4);
 
 		// Redis Map 计算 long 类型
-		int i1 = 6, i2 = 3, i3 = i1 + i2;
+		int i1 = 6;
+		int i2 = 3;
+		int i3 = i1 + i2;
 		stringRedisTemplate.opsForHash().put(key, "i", i1 + "");
 		Long i4 = stringRedisTemplate.opsForHash().increment(key, "i", i2);
 		assertNotNull(i4);
 		assertEquals(i3, i4);
 
 		// Redis Map 计算 double 类型
-		double d1 = 0.2D, d2 = 0.3D, d3 = d1 + d2;
+		double d1 = 0.2D;
+		double d2 = 0.3D;
+		double d3 = d1 + d2;
 		stringRedisTemplate.opsForHash().put(key, "d", d1 + "");
 		Double d4 = stringRedisTemplate.opsForHash().increment(key, "d", d2);
 		assertNotNull(d4);
