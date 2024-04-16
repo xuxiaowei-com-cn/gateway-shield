@@ -48,9 +48,43 @@ build:
     - sleep 20s
     - cat nohup-demo.out
     - mvn test -DskipTests=false -s settings.xml
+  artifacts:
+    name: build
+    paths:
+      - gateway/target/*.jar
   cache:
     paths:
       - .m2/repository
+
+build:docker:
+  stage: build
+  needs:
+    - job: build
+      artifacts: true
+  image: docker:cli
+  variables:
+    DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
+    GROUP_ID: cn.com.xuxiaowei.shield
+    ARTIFACT_ID: gateway
+    VERSION: 0.0.1-SNAPSHOT
+    CI_JAVA_OPTS: -Xms256m -Xmx512m
+  services:
+    - docker:dind
+  before_script:
+    - docker info
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - ls gateway/target
+    - >-
+      docker build --pull -t "$DOCKER_IMAGE_NAME" .
+      --build-arg GROUP_ID=${GROUP_ID}
+      --build-arg ARTIFACT_ID=${ARTIFACT_ID}
+      --build-arg VERSION=${VERSION}
+      --build-arg CI_PIPELINE_URL=${CI_PIPELINE_URL}
+      --build-arg CI_JOB_ID=${CI_JOB_ID}
+      --build-arg JAVA_OPTS="${CI_JAVA_OPTS}"
+      --build-arg APP_ARGS=${APP_ARGS}
+    - docker push "$DOCKER_IMAGE_NAME"
 
 include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
