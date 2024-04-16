@@ -55,6 +55,8 @@ build:
   cache:
     paths:
       - .m2/repository
+  tags:
+    - jihulab
 
 build:docker:
   stage: build
@@ -86,6 +88,22 @@ build:docker:
       --build-arg APP_ARGS=${APP_ARGS}
     - docker images
     - docker push "$DOCKER_IMAGE_NAME"
+  tags:
+    - jihulab
+
+build:deploy:
+  stage: build
+  needs:
+    - job: build:docker
+  image: docker:cli
+  variables:
+    DOCKER_HOST: $DEPLOY_DOCKER_HOST
+  script:
+    - docker info
+    - docker compose up -d
+  environment: production
+  tags:
+    - 911k-docker
 
 include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
