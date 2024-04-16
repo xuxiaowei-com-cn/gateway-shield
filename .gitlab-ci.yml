@@ -1,5 +1,56 @@
 stages:
+  - build
   - test
+
+build:
+  stage: build
+  image: xuxiaoweicomcn/maven-mysql-client:3.6.3-openjdk-17
+  variables:
+    MAVEN_OPTS: >-
+      -Dhttps.protocols=TLSv1.2
+      -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+      -Dorg.slf4j.simpleLogger.showDateTime=true
+      -Djava.awt.headless=true
+    MAVEN_CLI_OPTS: >-
+      --batch-mode
+      --errors
+      --fail-at-end
+      --show-version
+      --no-transfer-progress
+      -DinstallAtEnd=true
+      -DdeployAtEnd=true
+    GATEWAY_SHIELD_DATABASE_HOST: mysql
+    GATEWAY_SHIELD_DATABASE_USERNAME: root
+    GATEWAY_SHIELD_DATABASE_PASSWORD: xuxiaowei.com.cn
+    GATEWAY_SHIELD_DATABASE: gateway_shield
+    GATEWAY_SHIELD_REDIS_HOST: redis
+    GATEWAY_SHIELD_REDIS_PASSWORD: ""
+  services:
+    - name: mysql:8.3.0
+      alias: $GATEWAY_SHIELD_DATABASE_HOST
+      variables:
+        MYSQL_ROOT_PASSWORD: $GATEWAY_SHIELD_DATABASE_PASSWORD
+        MYSQL_DATABASE: $GATEWAY_SHIELD_DATABASE
+    - name: redis:7.2.4
+      alias: $GATEWAY_SHIELD_REDIS_HOST
+  before_script:
+    - if [ $CI_SERVER_HOST == 'gitlab.helm.xuxiaowei.cn' ]; then
+      sleep 20s;
+      fi
+    - mysql --version
+    - mysql -u ${GATEWAY_SHIELD_DATABASE_USERNAME} -p${GATEWAY_SHIELD_DATABASE_PASSWORD} --host=${GATEWAY_SHIELD_DATABASE_HOST} ${GATEWAY_SHIELD_DATABASE} < sql/gateway_shield.sql
+  script:
+    - free -h || cat /proc/meminfo
+    - mvn -v
+    - mvn clean package -DskipTests=true -s settings.xml
+    - free -h || cat /proc/meminfo
+    - nohup java -Xms128m -Xmx256m -jar demo/target/demo-0.0.1-SNAPSHOT.jar > nohup-demo.out 2>&1 &
+    - sleep 20s
+    - cat nohup-demo.out
+    - mvn test -DskipTests=false -s settings.xml
+  cache:
+    paths:
+      - .m2/repository
 
 include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
