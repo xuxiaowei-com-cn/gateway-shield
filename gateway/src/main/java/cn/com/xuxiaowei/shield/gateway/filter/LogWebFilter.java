@@ -1,6 +1,7 @@
 package cn.com.xuxiaowei.shield.gateway.filter;
 
 import cn.com.xuxiaowei.shield.gateway.constant.LogConstants;
+import cn.com.xuxiaowei.shield.gateway.utils.RedisUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
@@ -47,11 +49,18 @@ public class LogWebFilter implements WebFilter, Ordered {
 
 	private JdbcTemplate jdbcTemplate;
 
+	private StringRedisTemplate stringRedisTemplate;
+
 	private int order = ORDERED;
 
 	@Autowired
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
+	}
+
+	@Autowired
+	public void setStringRedisTemplate(StringRedisTemplate stringRedisTemplate) {
+		this.stringRedisTemplate = stringRedisTemplate;
 	}
 
 	@Override
@@ -81,6 +90,9 @@ public class LogWebFilter implements WebFilter, Ordered {
 				hostAddress);
 
 		save(exchange);
+
+		String redisVersion = RedisUtils.redisVersion(stringRedisTemplate);
+		log.info("redisVersion: {}", redisVersion);
 
 		return chain.filter(exchange);
 	}
