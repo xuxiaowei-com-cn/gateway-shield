@@ -84,6 +84,7 @@ build:docker:
       --build-arg CI_JOB_ID=${CI_JOB_ID}
       --build-arg JAVA_OPTS="${CI_JAVA_OPTS}"
       --build-arg APP_ARGS=${APP_ARGS}
+    - docker images
     - docker push "$DOCKER_IMAGE_NAME"
 
 include:
