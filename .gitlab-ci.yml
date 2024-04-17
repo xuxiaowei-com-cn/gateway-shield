@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - sync
 
 build:
   stage: build
@@ -109,3 +110,4 @@ include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
   - template: Jobs/SAST.gitlab-ci.yml
+  - /sync.yml
