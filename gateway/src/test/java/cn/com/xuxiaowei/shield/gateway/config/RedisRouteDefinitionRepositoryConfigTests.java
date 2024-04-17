@@ -112,7 +112,7 @@ class RedisRouteDefinitionRepositoryConfigTests {
 	 */
 	@SneakyThrows
 	public void init(String prefix) {
-		String key = "routedefinition_" + prefix;
+		String key = "routedefinition_:" + prefix;
 
 		RouteDefinition routeDefinition = new RouteDefinition();
 		routeDefinition.setId(prefix);
