@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.boot.web.reactive.context.AnnotationConfigReactiveWebServerApplicationContext;
 import org.springframework.cloud.gateway.actuate.AbstractGatewayControllerEndpoint;
 import org.springframework.cloud.gateway.actuate.GatewayControllerEndpoint;
 import org.springframework.cloud.gateway.actuate.GatewayLegacyControllerEndpoint;
@@ -18,6 +17,7 @@ import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RedisRouteDefinitionRepository;
 import org.springframework.cloud.gateway.route.RouteDefinition;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -60,7 +60,7 @@ class RedisRouteDefinitionRepositoryConfigTests {
 	private StringRedisTemplate stringRedisTemplate;
 
 	@Autowired
-	private AnnotationConfigReactiveWebServerApplicationContext applicationContext;
+	private ApplicationEventPublisher applicationEventPublisher;
 
 	@SneakyThrows
 	@Test
@@ -74,7 +74,7 @@ class RedisRouteDefinitionRepositoryConfigTests {
 		// 如果在创建 RedisRouteDefinitionRepository Bean 之后，Redis 数据路由发生变更，需要刷新路由，才可以读取到最新的配置。
 		// 如果引入了 org.springframework.boot:spring-boot-starter-actuator 依赖，
 		// 可以调用 /actuator/gateway/refresh 接口刷新路由配置。
-		applicationContext.publishEvent(new RefreshRoutesEvent(this));
+		applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
 
 		String url = String.format("http://%s.localdev.me:%s/sugrec", prefix, serverPort);
 
