@@ -76,6 +76,9 @@ class RedisRouteDefinitionRepositoryConfigTests {
 		// 可以调用 /actuator/gateway/refresh 接口刷新路由配置。
 		applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
 
+		// 增加订阅程序处理时间，防止自动化流水线偶尔出现异常
+		Thread.sleep(5_000);
+
 		String url = String.format("http://%s.localdev.me:%s/sugrec", prefix, serverPort);
 
 		RestTemplate restTemplate = new RestTemplate();
