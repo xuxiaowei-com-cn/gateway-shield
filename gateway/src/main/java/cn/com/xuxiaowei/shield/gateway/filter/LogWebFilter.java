@@ -45,7 +45,7 @@ public class LogWebFilter implements WebFilter, Ordered {
 
 	public static final int ORDERED = Ordered.HIGHEST_PRECEDENCE;
 
-	private static final String sql = "INSERT INTO `gateway_shield`.`gateway_shield_log` (`gateway_shield_log_id`, `request_id`, `scheme`, `host_name`, `host_address`, `port`, `path`, `type`, `user_agent`, `referer`, `headers_json`, `year`, `month`, `day`, `hour`, `minute`, `second`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String sql = "INSERT INTO `gateway_shield`.`gateway_shield_log` (`gateway_shield_log_id`, `request_id`, `scheme`, `host_name`, `host_address`, `port`, `path`, `query`, `raw_query`, `type`, `user_agent`, `referer`, `headers_json`, `year`, `month`, `day`, `hour`, `minute`, `second`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	private JdbcTemplate jdbcTemplate;
 
@@ -104,6 +104,8 @@ public class LogWebFilter implements WebFilter, Ordered {
 		String id = request.getId();
 		URI uri = request.getURI();
 		String scheme = uri.getScheme();
+		String query = uri.getQuery();
+		String rawQuery = uri.getRawQuery();
 		int port = uri.getPort();
 		String path = uri.getPath();
 
@@ -140,6 +142,8 @@ public class LogWebFilter implements WebFilter, Ordered {
 				new SqlParameterValue(Types.VARCHAR, hostAddress),
 				new SqlParameterValue(Types.INTEGER, port),
 				new SqlParameterValue(Types.VARCHAR, path),
+				new SqlParameterValue(Types.VARCHAR, query),
+				new SqlParameterValue(Types.VARCHAR, rawQuery),
 				new SqlParameterValue(Types.VARCHAR, type),
 				new SqlParameterValue(Types.VARCHAR, userAgent),
 				new SqlParameterValue(Types.VARCHAR, referer),
