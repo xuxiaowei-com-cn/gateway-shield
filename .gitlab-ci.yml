@@ -104,7 +104,7 @@ build:deploy:
     - docker compose up -d
   environment: production
   tags:
-    - 911k-docker
+    - lighthouse-docker
 
 include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
