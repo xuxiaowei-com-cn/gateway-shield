@@ -1,7 +1,6 @@
 package cn.com.xuxiaowei.shield.gateway.filter;
 
 import cn.com.xuxiaowei.shield.gateway.constant.LogConstants;
-import cn.com.xuxiaowei.shield.gateway.utils.RedisUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
@@ -91,8 +90,8 @@ public class LogWebFilter implements WebFilter, Ordered {
 
 		save(exchange);
 
-		String redisVersion = RedisUtils.redisVersion(stringRedisTemplate);
-		log.info("redisVersion: {}", redisVersion);
+		// String redisVersion = RedisUtils.redisVersion(stringRedisTemplate);
+		// log.info("redisVersion: {}", redisVersion);
 
 		return chain.filter(exchange);
 	}
