@@ -1,5 +1,12 @@
 server:
   port: ${GATEWAY_SHIELD_PORT:45450}
+  forward-headers-strategy: NATIVE
+  tomcat:
+    remoteip:
+      # 从中提取远程IP的HTTP标头的名称。 例如，`X-FORWARDED-FOR`。
+      remote-ip-header: X-Real-IP
+      # 用于覆盖原始端口值的HTTP标头的名称。
+      port-header: X-Forwarded-Proto
 
 ---
 
