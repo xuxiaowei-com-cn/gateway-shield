@@ -59,6 +59,18 @@ spring:
             # 测试类中的 server.port 为 0
             # * 代表所有端口
             - Host=baidu.localdev.me:*
+        - id: hector
+          uri: https://hector.baidu.com
+          predicates:
+            # http://hector.localdev.me:45450/a.js
+            # 测试类中的 server.port 为 0
+            # * 代表所有端口
+            - Host=hector.localdev.me:*
+          filters:
+            - name: JavaScriptAddResponseHeader
+              args:
+                name: Cache-Control
+                value: "max-age=3600"
         - id: demo
           uri: http://localhost:45678
           predicates:
