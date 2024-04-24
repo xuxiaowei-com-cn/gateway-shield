@@ -51,8 +51,8 @@ logging:
     # 当前应用响应数据（非转发数据）
     org.springframework.core.codec.CharSequenceEncoder: debug
   pattern:
-    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %X{G-Request-Id} %clr(:){faint} %X{G-Host-Name} %clr(:){faint} %X{G-Host-Address} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
-    file: "%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %X{G-Request-Id} : %X{G-Host-Name} : %X{G-Host-Address} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %X{G-Request-Id} %clr(:){faint} %X{G-Host} %clr(:){faint} %X{G-Host-Name} %clr(:){faint} %X{G-Host-Address} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+    file: "%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %X{G-Request-Id} : %X{G-Host} : %X{G-Host-Name} : %X{G-Host-Address} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
   file:
     name: /logs/${spring.application.name}/${spring.application.name}.log
   logback:

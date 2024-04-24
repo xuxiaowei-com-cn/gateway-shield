@@ -76,17 +76,24 @@ public class LogWebFilter implements WebFilter, Ordered {
 
 		String id = request.getId();
 		URI uri = request.getURI();
+		HttpHeaders headers = request.getHeaders();
+		String host = headers.getFirst(HttpHeaders.HOST);
 		InetSocketAddress remoteAddress = request.getRemoteAddress();
 		InetAddress address = remoteAddress.getAddress();
 		String hostName = address.getHostName();
 		String hostAddress = address.getHostAddress();
 
 		MDC.put(LogConstants.G_REQUEST_ID, id);
+		MDC.put(LogConstants.G_HOST, host);
 		MDC.put(LogConstants.G_HOST_NAME, hostName);
 		MDC.put(LogConstants.G_HOST_ADDRESS, hostAddress);
 
-		log.debug("URI: {}, {}: {}, {}: {}", uri, LogConstants.G_HOST_NAME, hostName, LogConstants.G_HOST_ADDRESS,
-				hostAddress);
+		// @formatter:off
+		log.debug("URI: {}, {}: {}, {}: {}, {}: {}", uri,
+				LogConstants.G_HOST, host,
+				LogConstants.G_HOST_NAME, hostName,
+				LogConstants.G_HOST_ADDRESS, hostAddress);
+		// @formatter:on
 
 		save(exchange);
 

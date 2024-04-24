@@ -14,6 +14,11 @@ public class LogConstants {
 	public static final String G_REQUEST_ID = "G-Request-Id";
 
 	/**
+	 * 用户 请求 Host
+	 */
+	public static final String G_HOST = "G-Host";
+
+	/**
 	 * 用户 请求 域名
 	 */
 	public static final String G_HOST_NAME = "G-Host-Name";
