@@ -44,7 +44,7 @@ public class LogWebFilter implements WebFilter, Ordered {
 
 	public static final int ORDERED = Ordered.HIGHEST_PRECEDENCE;
 
-	private static final String sql = "INSERT INTO `gateway_shield`.`gateway_shield_log` (`gateway_shield_log_id`, `request_id`, `scheme`, `host_name`, `host_address`, `port`, `path`, `query`, `raw_query`, `type`, `user_agent`, `referer`, `headers_json`, `year`, `month`, `day`, `hour`, `minute`, `second`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String sql = "INSERT INTO `gateway_shield`.`gateway_shield_log` (`gateway_shield_log_id`, `request_id`, `scheme`, `host_name`, `host_address`, `host`, `port`, `path`, `query`, `raw_query`, `type`, `user_agent`, `referer`, `headers_json`, `year`, `month`, `day`, `hour`, `minute`, `second`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	private JdbcTemplate jdbcTemplate;
 
@@ -123,6 +123,7 @@ public class LogWebFilter implements WebFilter, Ordered {
 
 		String userAgent = headers.getFirst(HttpHeaders.USER_AGENT);
 		String referer = headers.getFirst(HttpHeaders.REFERER);
+		String host = headers.getFirst(HttpHeaders.HOST);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String headersJson = objectMapper.writeValueAsString(headers);
@@ -139,6 +140,7 @@ public class LogWebFilter implements WebFilter, Ordered {
 				new SqlParameterValue(Types.VARCHAR, scheme),
 				new SqlParameterValue(Types.VARCHAR, hostName),
 				new SqlParameterValue(Types.VARCHAR, hostAddress),
+				new SqlParameterValue(Types.VARCHAR, host),
 				new SqlParameterValue(Types.INTEGER, port),
 				new SqlParameterValue(Types.VARCHAR, path),
 				new SqlParameterValue(Types.VARCHAR, query),
