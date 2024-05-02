@@ -1,6 +1,6 @@
 server:
   port: ${GATEWAY_SHIELD_PORT:45450}
-  forward-headers-strategy: NATIVE
+  # forward-headers-strategy: NATIVE
   tomcat:
     # https://docs.spring.io/spring-boot/how-to/webserver.html#howto.webserver.use-behind-a-proxy-server.tomcat
     remoteip:
