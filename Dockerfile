@@ -22,6 +22,7 @@ RUN printf "GROUP_ID: %s\n" "$GROUP_ID" \
 COPY gateway/target/$ARTIFACT_ID-$VERSION.jar app.jar
 
 EXPOSE 45450
+EXPOSE 45455
 
 ENV TZ=Asia/Shanghai \
     LANG=C.UTF-8 \
