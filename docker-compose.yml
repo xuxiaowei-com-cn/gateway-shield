@@ -7,6 +7,7 @@ services:
       - ${GATEWAY_SHIELD_PORT_HTTP:-45455}:${GATEWAY_SHIELD_PORT_HTTP:-45455}
     volumes:
       - /gateway-shield/logs:/logs
+      - /gateway-shield/config:/config
     environment:
       - GATEWAY_SHIELD_PORT=${GATEWAY_SHIELD_PORT:-45450}
       - GATEWAY_SHIELD_PORT_HTTP=${GATEWAY_SHIELD_PORT_HTTP:-45455}
