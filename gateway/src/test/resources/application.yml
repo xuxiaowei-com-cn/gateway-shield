@@ -3,11 +3,6 @@ server:
 
 ---
 
-gateway-shield:
-  http-port: ${GATEWAY_SHIELD_PORT_HTTP:45455}
-
----
-
 spring:
   application:
     name: gateway-shield

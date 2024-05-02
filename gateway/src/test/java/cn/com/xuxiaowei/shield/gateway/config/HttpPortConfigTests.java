@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @since 0.0.1
  */
 @Slf4j
+@TestPropertySource(properties = { "gateway-shield.http-port=45455" })
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class HttpPortConfigTests {
 
