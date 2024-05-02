@@ -13,7 +13,7 @@ server:
 
 gateway-shield:
   http-port: ${GATEWAY_SHIELD_PORT_HTTP:45455}
-  refresh-routes-event-path: ${GATEWAY_SHIELD_REFRESH_ROUTES_EVENT_PATH:}
+  refresh-routes-event-path: ${GATEWAY_SHIELD_ROUTES_PATH:}
 
 ---
 
