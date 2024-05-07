@@ -295,9 +295,18 @@ public class LogWebFilter implements WebFilter, Ordered {
 							List<Long> subdivisionGeoNameIdList = new ArrayList<>();
 							List<String> subdivisionNameList = new ArrayList<>();
 							for (Subdivision subdivision : subdivisions) {
-								subdivisionIsoCodeList.add(subdivision.getIsoCode());
-								subdivisionGeoNameIdList.add(subdivision.getGeoNameId());
-								subdivisionNameList.add(subdivision.getName());
+								String isoCode = subdivision.getIsoCode();
+								Long geoNameId = subdivision.getGeoNameId();
+								String name = subdivision.getName();
+								if (StringUtils.hasText(isoCode)) {
+									subdivisionIsoCodeList.add(isoCode);
+								}
+								if (geoNameId != null) {
+									subdivisionGeoNameIdList.add(geoNameId);
+								}
+								if (StringUtils.hasText(name)) {
+									subdivisionNameList.add(name);
+								}
 							}
 
 							subdivisionIsoCodes = Joiner.on(",").join(subdivisionIsoCodeList);
