@@ -14,6 +14,10 @@ server:
 gateway-shield:
   http-port: ${GATEWAY_SHIELD_PORT_HTTP:45455}
   refresh-routes-event-path: ${GATEWAY_SHIELD_ROUTES_PATH:}
+  enable-asn: ${GATEWAY_SHIELD_ENABLE_ASN:false}
+  asn-database: ${GATEWAY_SHIELD_ASN_DATABASE:}
+  enable-city: ${GATEWAY_SHIELD_ENABLE_CITY:false}
+  city-database: ${GATEWAY_SHIELD_CITY_DATABASE:}
 
 ---
 

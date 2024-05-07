@@ -101,4 +101,24 @@ public class GatewayShieldProperties {
 	 */
 	private List<String> refreshRoutesEventCidr = Arrays.asList("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16");
 
+	/**
+	 * 是否开启 IP ASN 地址识别
+	 */
+	private boolean enableAsn;
+
+	/**
+	 * IP ASN 地址识别 数据库文件路径
+	 */
+	private String asnDatabase;
+
+	/**
+	 * 是否开启 城市 IP 地址识别
+	 */
+	private boolean enableCity;
+
+	/**
+	 * 城市 IP 地址识别 数据库文件路径
+	 */
+	private String cityDatabase;
+
 }

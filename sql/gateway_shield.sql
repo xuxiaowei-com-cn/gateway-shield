@@ -11,7 +11,7 @@
  Target Server Version : 80033
  File Encoding         : 65001
 
- Date: 15/04/2024 22:16:57
+ Date: 07/05/2024 20:33:35
 */
 
 SET NAMES utf8mb4;
@@ -26,7 +26,22 @@ CREATE TABLE `gateway_shield_log`  (
   `scheme` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '协议',
   `host_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '域名',
   `host_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'IP',
-  `host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Host',
+  `network` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '网段',
+  `system_organization` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '运营商',
+  `system_number` int(0) NULL DEFAULT NULL COMMENT '运营商ID',
+  `continent_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '大陆代码',
+  `continent_geo_name_id` int(0) NULL DEFAULT NULL COMMENT '大陆地理ID',
+  `continent_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '大陆名称',
+  `country_iso_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '国家/地区ISO代码',
+  `country_geo_name_id` int(0) NULL DEFAULT NULL COMMENT '国家/地区地理ID',
+  `country_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '国家/地区名称',
+  `is_in_european_union` tinyint(1) NULL DEFAULT NULL COMMENT '是否是欧盟成员国',
+  `subdivision_iso_codes` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '地区细分ISO代码，如：省份等',
+  `subdivision_geo_name_ids` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '地区细分地理ID，如：省份等',
+  `subdivision_names` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '地区细分名称，如：省份等',
+  `city_geo_name_id` int(0) NULL DEFAULT NULL COMMENT '城市地理ID',
+  `city_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '城市',
+  `host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Host',
   `port` int(0) NOT NULL COMMENT '端口',
   `path` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '路径',
   `query` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '参数',
