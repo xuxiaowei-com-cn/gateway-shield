@@ -9,9 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +61,34 @@ class IndexRestControllerTests {
 		assertEquals(List.of(host), map.get("x-forwarded-host"));
 
 		GatewayApplicationTests.queryForList(jdbcTemplate);
+	}
+
+	@SneakyThrows
+	@Test
+	void headerNamesAuthorization() {
+
+		String url = String.format("http://demo.localdev.me:%s", serverPort);
+
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+		httpHeaders.setBasicAuth("admin", "password");
+		Map<String, Object> requestBody = new HashMap<>();
+		HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
+		Map map = restTemplate.postForObject(url, httpEntity, Map.class);
+
+		assertNotNull(map);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
+		String value = objectWriter.writeValueAsString(map);
+
+		log.info("Headers: \n{}", value);
+
+		assertNotNull(map.get(HttpHeaders.AUTHORIZATION.toLowerCase()));
+
+		List<String> list = httpHeaders.get(HttpHeaders.AUTHORIZATION);
+		assertEquals(list, map.get(HttpHeaders.AUTHORIZATION.toLowerCase()));
 	}
 
 }

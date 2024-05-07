@@ -14,7 +14,6 @@ import reactor.core.publisher.Mono;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -43,21 +42,15 @@ public class RequestHeaderGlobalFilter implements GlobalFilter, Ordered {
 
 		String id = request.getId();
 		InetSocketAddress remoteAddress = request.getRemoteAddress();
-		HttpHeaders headers = request.getHeaders();
 		InetAddress address = remoteAddress.getAddress();
 		String hostName = address.getHostName();
 		String hostAddress = address.getHostAddress();
-		List<String> authorizations = headers.get(HttpHeaders.AUTHORIZATION);
 
 		Consumer<HttpHeaders> httpHeaders = httpHeader -> {
 
 			httpHeader.set(LogConstants.G_REQUEST_ID, id);
 			httpHeader.set(LogConstants.G_HOST_NAME, hostName);
 			httpHeader.set(LogConstants.G_HOST_ADDRESS, hostAddress);
-
-			if (authorizations != null && !authorizations.isEmpty()) {
-				httpHeader.addAll(HttpHeaders.AUTHORIZATION, authorizations);
-			}
 		};
 
 		ServerHttpRequest build = request.mutate().headers(httpHeaders).build();

@@ -2,7 +2,8 @@ package cn.com.xuxiaowei.shield.demo.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
@@ -22,9 +23,9 @@ public class IndexRestController {
 	 * @param response
 	 * @return
 	 */
-	@GetMapping
+	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
 	public Map<String, Object> index(HttpServletRequest request, HttpServletResponse response) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>(8);
 
 		Enumeration<String> headerNames = request.getHeaderNames();
 		while (headerNames.hasMoreElements()) {
