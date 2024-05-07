@@ -3,6 +3,13 @@ stages:
   - test
   - sync
 
+variables:
+  DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID
+  GROUP_ID: cn.com.xuxiaowei.shield
+  ARTIFACT_ID: gateway
+  VERSION: 0.0.1-SNAPSHOT
+  CI_JAVA_OPTS: -Xms256m -Xmx512m
+
 build:
   stage: build
   image: xuxiaoweicomcn/maven-mysql-client:3.6.3-openjdk-17
@@ -65,12 +72,6 @@ build:docker:
     - job: build
       artifacts: true
   image: docker:cli
-  variables:
-    DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID
-    GROUP_ID: cn.com.xuxiaowei.shield
-    ARTIFACT_ID: gateway
-    VERSION: 0.0.1-SNAPSHOT
-    CI_JAVA_OPTS: -Xms256m -Xmx512m
   services:
     - docker:dind
   before_script:
