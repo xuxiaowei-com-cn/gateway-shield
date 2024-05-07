@@ -1,6 +1,8 @@
 # FROM docker.io/alibabadragonwell/dragonwell:17-anolis
 FROM registry.jihulab.com/xuxiaowei-jihu/xuxiaowei-cloud/spring-cloud-xuxiaowei/alibabadragonwell/dragonwell:17-anolis
 
+LABEL maintainer="徐晓伟 <xuxiaowei@xuxiaowei.com.cn>"
+
 WORKDIR /home
 
 ARG GROUP_ID=${GROUP_ID}
