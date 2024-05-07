@@ -66,7 +66,7 @@ build:docker:
       artifacts: true
   image: docker:cli
   variables:
-    DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
+    DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID
     GROUP_ID: cn.com.xuxiaowei.shield
     ARTIFACT_ID: gateway
     VERSION: 0.0.1-SNAPSHOT
