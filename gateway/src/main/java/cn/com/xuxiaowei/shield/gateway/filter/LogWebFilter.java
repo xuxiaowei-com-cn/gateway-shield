@@ -337,12 +337,17 @@ public class LogWebFilter implements WebFilter, Ordered {
 			}
 		}
 
-		if (network == null) {
+		if (network == null && host != null) {
 			for (String intranet : INTRANETS) {
-				IpAddressMatcher ipAddressMatcher = new IpAddressMatcher(intranet);
-				if (ipAddressMatcher.matches(host)) {
-					network = intranet;
-					break;
+				try {
+					IpAddressMatcher ipAddressMatcher = new IpAddressMatcher(intranet);
+					if (ipAddressMatcher.matches(host.split(":")[0])) {
+						network = intranet;
+						break;
+					}
+				}
+				catch (Exception e) {
+					log.error("host 内网识别异常：", e);
 				}
 			}
 		}
