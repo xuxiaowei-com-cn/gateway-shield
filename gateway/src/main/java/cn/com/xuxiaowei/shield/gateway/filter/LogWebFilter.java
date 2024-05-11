@@ -337,11 +337,11 @@ public class LogWebFilter implements WebFilter, Ordered {
 			}
 		}
 
-		if (network == null && host != null) {
+		if (network == null && hostAddress != null) {
 			for (String intranet : INTRANETS) {
 				try {
 					IpAddressMatcher ipAddressMatcher = new IpAddressMatcher(intranet);
-					if (ipAddressMatcher.matches(host.split(":")[0])) {
+					if (ipAddressMatcher.matches(hostAddress)) {
 						network = intranet;
 						break;
 					}
