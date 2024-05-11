@@ -2,6 +2,7 @@ package cn.com.xuxiaowei.shield.gateway.filter;
 
 import cn.com.xuxiaowei.shield.gateway.constant.LogConstants;
 import cn.com.xuxiaowei.shield.gateway.properties.GatewayShieldProperties;
+import cn.com.xuxiaowei.shield.gateway.utils.IpAddressMatcher;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
@@ -43,6 +44,7 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,9 +61,19 @@ public class LogWebFilter implements WebFilter, Ordered {
 
 	public static final int ORDERED = Ordered.HIGHEST_PRECEDENCE;
 
-	private static final String sql = "INSERT INTO `gateway_shield_log` "
+	private static final String SQL = "INSERT INTO `gateway_shield_log` "
 			+ " (`gateway_shield_log_id`, `request_id`, `scheme`, `host_name`, `host_address`, `network`, `system_organization`, `system_number`, `continent_code`, `continent_geo_name_id`, `continent_name`, `country_iso_code`, `country_geo_name_id`, `country_name`, `is_in_european_union`, `subdivision_iso_codes`, `subdivision_geo_name_ids`, `subdivision_names`, `city_geo_name_id`, `city_name`, `host`, `port`, `path`, `query`, `raw_query`, `type`, `user_agent`, `referer`, `headers_json`, `year`, `month`, `day`, `hour`, `minute`, `second`) "
 			+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+	private static final List<String> INTRANETS = Arrays.asList(
+			// 10.0.0.0 到 10.255.255.255
+			"10.0.0.0/8",
+			// 172.16.0.0 到 172.31.255.255
+			"172.16.0.0/12",
+			// 192.168.0.0 到 192.168.255.255
+			"192.168.0.0/16",
+			// 127.0.0.1
+			"127.0.0.1/32");
 
 	private JdbcTemplate jdbcTemplate;
 
@@ -325,6 +337,16 @@ public class LogWebFilter implements WebFilter, Ordered {
 			}
 		}
 
+		if (network == null) {
+			for (String intranet : INTRANETS) {
+				IpAddressMatcher ipAddressMatcher = new IpAddressMatcher(intranet);
+				if (ipAddressMatcher.matches(host)) {
+					network = intranet;
+					break;
+				}
+			}
+		}
+
 		// @formatter:off
 		SqlParameterValue[] parameters = new SqlParameterValue[] {
 				new SqlParameterValue(Types.VARCHAR, UUID.randomUUID().toString()),
@@ -366,7 +388,7 @@ public class LogWebFilter implements WebFilter, Ordered {
 		// @formatter:on
 
 		PreparedStatementSetter pss = new ArgumentPreparedStatementSetter(parameters);
-		jdbcTemplate.update(sql, pss);
+		jdbcTemplate.update(SQL, pss);
 	}
 
 }
