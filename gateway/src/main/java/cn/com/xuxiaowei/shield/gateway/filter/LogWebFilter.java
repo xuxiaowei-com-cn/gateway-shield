@@ -341,7 +341,9 @@ public class LogWebFilter implements WebFilter, Ordered {
 			for (String intranet : INTRANETS) {
 				try {
 					IpAddressMatcher ipAddressMatcher = new IpAddressMatcher(intranet);
-					if (ipAddressMatcher.matches(hostAddress)) {
+					boolean matches = ipAddressMatcher.matches(hostAddress);
+					log.debug("intranet: {}, hostAddress: {}, matches: {}", intranet, hostAddress, matches);
+					if (matches) {
 						network = intranet;
 						break;
 					}
