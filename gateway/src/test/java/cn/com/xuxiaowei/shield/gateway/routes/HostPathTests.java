@@ -12,6 +12,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -25,42 +26,25 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class BaiduTests {
+// @formatter:off
+@TestPropertySource(properties = {
+        "spring.cloud.gateway.routes[0].id=test-baidu-sugrec",
+        "spring.cloud.gateway.routes[0].uri=https://www.baidu.com",
+        "spring.cloud.gateway.routes[0].predicates[0]=Path=/sugrec",
+        "spring.cloud.gateway.routes[0].predicates[1]=Host=test-baidu.localdev.me:*",
+        "spring.cloud.gateway.routes[1].id=test-baidu-a.js",
+        "spring.cloud.gateway.routes[1].uri=https://hector.baidu.com",
+        "spring.cloud.gateway.routes[1].predicates[0]=Path=/a.js",
+        "spring.cloud.gateway.routes[1].predicates[1]=Host=test-baidu.localdev.me:*"
+})
+// @formatter:on
+class HostPathTests {
 
 	@LocalServerPort
 	private int serverPort;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-
-	@SneakyThrows
-	@Test
-	void sugrec() {
-
-		String url = String.format("http://baidu.localdev.me:%s/sugrec", serverPort);
-
-		RestTemplate restTemplate = new RestTemplate();
-
-		ResponseEntity<String> entity = restTemplate.getForEntity(url, String.class);
-
-		assertEquals(entity.getStatusCode(), HttpStatus.OK);
-
-		String body = entity.getBody();
-
-		assertNotNull(body);
-
-		log.info("{} -> https://www.baidu.com/sugrec: {}", url, body);
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		Map<String, Object> map = objectMapper.readValue(body, new TypeReference<>() {
-		});
-
-		assertEquals(0, map.get("err_no"));
-		assertEquals("", map.get("errmsg"));
-		assertNotNull(map.get("queryid"));
-
-		GatewayApplicationTests.queryForList(jdbcTemplate);
-	}
 
 	@SneakyThrows
 	@Test

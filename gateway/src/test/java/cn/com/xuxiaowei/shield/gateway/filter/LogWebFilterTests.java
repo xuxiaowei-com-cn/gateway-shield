@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -27,6 +28,13 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+// @formatter:off
+@TestPropertySource(properties = {
+		"spring.cloud.gateway.routes[0].id=demo",
+		"spring.cloud.gateway.routes[0].uri=http://localhost:45678",
+		"spring.cloud.gateway.routes[0].predicates[0]=Host=demo.localdev.me:*"
+})
+// @formatter:on
 public class LogWebFilterTests {
 
 	@LocalServerPort

@@ -13,6 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -29,6 +30,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+// @formatter:off
+@TestPropertySource(properties = {
+		"spring.cloud.gateway.routes[0].id=demo",
+		"spring.cloud.gateway.routes[0].uri=http://localhost:45678",
+		"spring.cloud.gateway.routes[0].predicates[0]=Host=demo.localdev.me:*"
+})
+// @formatter:on
 class IndexRestControllerTests {
 
 	@LocalServerPort
