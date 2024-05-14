@@ -4,7 +4,7 @@ import cn.com.xuxiaowei.shield.gateway.filter.JavaScriptAddResponseHeaderGateway
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.config.GatewayAutoConfiguration;
 import org.springframework.cloud.gateway.config.conditional.ConditionalOnEnabledFilter;
-import org.springframework.cloud.gateway.filter.factory.AddResponseHeaderGatewayFilterFactory;
+import org.springframework.cloud.gateway.filter.factory.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +14,19 @@ import org.springframework.context.annotation.Configuration;
  * @author xuxiaowei
  * @since 0.0.1
  * @see GatewayAutoConfiguration
+ * @see AddRequestParameterGatewayFilterFactory
+ * @see RemoveRequestParameterGatewayFilterFactory
+ * @see AddRequestHeaderGatewayFilterFactory
+ * @see RemoveRequestHeaderGatewayFilterFactory
+ * @see MapRequestHeaderGatewayFilterFactory
  * @see AddResponseHeaderGatewayFilterFactory
+ * @see RemoveResponseHeaderGatewayFilterFactory
+ * @see DedupeResponseHeaderGatewayFilterFactory
+ * @see RedirectToGatewayFilterFactory
+ * @see RewritePathGatewayFilterFactory
+ * @see PrefixPathGatewayFilterFactory
+ * @see PreserveHostHeaderGatewayFilterFactory
+ * @see RequestRateLimiterGatewayFilterFactory
  */
 @Slf4j
 @Configuration
