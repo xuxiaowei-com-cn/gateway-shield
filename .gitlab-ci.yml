@@ -50,8 +50,8 @@ docker:build:
       --build-arg "CI_PIPELINE_URL=${CI_PIPELINE_URL}"
       --destination "${CI_REGISTRY_IMAGE}/docs:${DOCKER_TAG}"
       --destination "${CI_REGISTRY_IMAGE}/docs:${DOCKER_TAG}-${CI_PIPELINE_ID}"
-      --destination "xuxiaoweicomcn/docs:${DOCKER_TAG}"
-      --destination "xuxiaoweicomcn/docs:${DOCKER_TAG}-${CI_PIPELINE_ID}"
+      --destination "xuxiaoweicomcn/gateway-shield-docs:${DOCKER_TAG}"
+      --destination "xuxiaoweicomcn/gateway-shield-docs:${DOCKER_TAG}-${CI_PIPELINE_ID}"
   rules:
     - if: $CI_COMMIT_BRANCH == "docs" && $ENABLE_DOCS_DOCKER == "true"
 
