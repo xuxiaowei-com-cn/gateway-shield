@@ -1,0 +1,9 @@
+services:
+  gateway-shield-docs:
+    image: ${CI_REGISTRY_IMAGE}/docs:${DOCKER_TAG}-${CI_PIPELINE_ID}
+    restart: always
+    ports:
+      - ${GATEWAY_SHIELD_DOCS_PORT:-45850}:80
+    volumes:
+      - /gateway-shield-docs/logs:/var/log/nginx
+    container_name: gateway-shield-docs
