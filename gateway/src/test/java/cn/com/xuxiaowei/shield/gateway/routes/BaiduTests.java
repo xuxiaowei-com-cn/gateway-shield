@@ -62,4 +62,40 @@ class BaiduTests {
 		GatewayApplicationTests.queryForList(jdbcTemplate);
 	}
 
+	@SneakyThrows
+	@Test
+	void testBaidu() {
+
+		String url = String.format("http://test-baidu.localdev.me:%s/sugrec", serverPort);
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		ResponseEntity<String> entity = restTemplate.getForEntity(url, String.class);
+
+		assertEquals(entity.getStatusCode(), HttpStatus.OK);
+
+		String body = entity.getBody();
+
+		assertNotNull(body);
+
+		log.info("{} -> https://www.baidu.com/sugrec: {}", url, body);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, Object> map = objectMapper.readValue(body, new TypeReference<>() {
+		});
+
+		assertEquals(0, map.get("err_no"));
+		assertEquals("", map.get("errmsg"));
+		assertNotNull(map.get("queryid"));
+
+		String jsUrl = String.format("http://test-baidu.localdev.me:%s/a.js", serverPort);
+
+		String js = restTemplate.getForObject(jsUrl, String.class);
+
+		assertNotNull(js);
+
+		GatewayApplicationTests.queryForList(jdbcTemplate);
+
+	}
+
 }

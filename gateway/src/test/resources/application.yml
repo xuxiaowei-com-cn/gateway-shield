@@ -79,6 +79,20 @@ spring:
               args:
                 name: Cache-Control
                 value: "max-age=3600"
+
+
+        - id: test-baidu-sugrec
+          uri: https://www.baidu.com
+          predicates:
+            - Path=/sugrec
+            - Host=test-baidu.localdev.me:*
+        - id: test-baidu-a.js
+          uri: https://hector.baidu.com
+          predicates:
+            - Path=/a.js
+            - Host=test-baidu.localdev.me:*
+
+
         - id: demo
           uri: http://localhost:45678
           predicates:
