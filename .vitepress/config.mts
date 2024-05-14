@@ -40,8 +40,8 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' },
+      { text: '首页', link: '/' },
+      { text: '指南', link: '/guide/what-is-spring-cloud-gateway', activeMatch: '/guide/' },
       {
         text: '其他文档',
         activeMatch: `^/(guide|style-guide|cookbook|examples)/`,
@@ -73,13 +73,18 @@ export default defineConfig({
         ]
       },
     ],
-
+    logo: { src: '/favicon.ico', width: 24, height: 24 },
+    search: {
+      provider: 'local'
+    },
     sidebar: [
       {
-        text: 'Examples',
+        text: '简介',
+        collapsed: false,
+        base: '/guide/',
         items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
+          { text: '什么是 Spring Cloud Gateway？', link: 'what-is-spring-cloud-gateway' },
+          { text: '快速开始', link: 'getting-started' }
         ]
       }
     ],

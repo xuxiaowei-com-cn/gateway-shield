@@ -4,22 +4,20 @@ layout: home
 
 hero:
   name: "网盾"
-  text: "一个基于 Spring Gateway 的代理项目"
-  tagline: My great project tagline
+  text: "一个基于 Spring Cloud Gateway 的代理项目"
+  tagline: 可使用 Spring Cloud Gateway 功能代理、监控所有项目
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: 什么是 Spring Cloud Gateway？
+      link: /guide/what-is-spring-cloud-gateway
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: 快速开始
+      link: /guide/getting-started
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Spring Cloud Gateway
+    details: 基于 org.springframework.cloud:spring-cloud-starter-gateway 开发的代理服务
+  - title: IP 地理信息
+    details: 基于 geoip2 的 IP 地理信息，按照识别大陆、国家、省、市
 ---
 
