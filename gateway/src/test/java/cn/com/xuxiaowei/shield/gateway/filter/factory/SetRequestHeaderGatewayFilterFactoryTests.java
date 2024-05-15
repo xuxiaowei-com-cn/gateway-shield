@@ -12,8 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
-import static cn.com.xuxiaowei.shield.gateway.filter.factory.SetRequestHeaderGatewayFilterFactoryTests.NAME;
-import static cn.com.xuxiaowei.shield.gateway.filter.factory.SetRequestHeaderGatewayFilterFactoryTests.VALUE;
+import static cn.com.xuxiaowei.shield.gateway.filter.factory.SetRequestHeaderGatewayFilterFactoryTests.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -31,6 +30,13 @@ import static org.junit.jupiter.api.Assertions.*;
         "spring.cloud.gateway.routes[0].filters[0].name=SetRequestHeader",
         "spring.cloud.gateway.routes[0].filters[0].args.name=" + NAME,
         "spring.cloud.gateway.routes[0].filters[0].args.value=" + VALUE,
+
+		"spring.cloud.gateway.routes[1].id=ua",
+		"spring.cloud.gateway.routes[1].uri=http://localhost:45678",
+		"spring.cloud.gateway.routes[1].predicates[0]=Host=ua.localdev.me:*",
+		"spring.cloud.gateway.routes[1].filters[0].name=SetRequestHeader",
+		"spring.cloud.gateway.routes[1].filters[0].args.name=" + UA_NAME,
+		"spring.cloud.gateway.routes[1].filters[0].args.value=" + UA_VALUE,
 })
 // @formatter:on
 class SetRequestHeaderGatewayFilterFactoryTests {
@@ -38,6 +44,10 @@ class SetRequestHeaderGatewayFilterFactoryTests {
 	static final String NAME = "abc-xuxiaowei";
 
 	static final String VALUE = "123-test-hkjkljk";
+
+	static final String UA_NAME = "User-Agent";
+
+	static final String UA_VALUE = "123456123456";
 
 	@LocalServerPort
 	private int serverPort;
@@ -62,6 +72,27 @@ class SetRequestHeaderGatewayFilterFactoryTests {
 		List<String> list = (List<String>) valueObj;
 		assertEquals(1, list.size());
 		assertEquals(VALUE, list.get(0));
+	}
+
+	@Test
+	void ua() {
+
+		String url = String.format("http://ua.localdev.me:%s/header", serverPort);
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		Map map = restTemplate.getForObject(url, Map.class);
+
+		assertNotNull(map);
+
+		Object valueObj = map.get(UA_NAME.toLowerCase());
+
+		assertNotNull(valueObj);
+		assertInstanceOf(List.class, valueObj);
+
+		List<String> list = (List<String>) valueObj;
+		assertEquals(1, list.size());
+		assertTrue(list.contains(UA_VALUE));
 	}
 
 }
