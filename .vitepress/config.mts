@@ -91,6 +91,20 @@ export default defineConfig({
           { text: '赞助', link: 'https://docs.xuxiaowei.cloud/spring-cloud-xuxiaowei/guide/contributes.html' },
           { text: '视频', link: 'https://docs.xuxiaowei.cloud/spring-cloud-xuxiaowei/guide/video.html' },
         ]
+      },
+      {
+        text: '功能',
+        collapsed: false,
+        items: [
+          {
+            text: '过滤器',
+            collapsed: true,
+            base: '/feature/filter/',
+            items: [
+              { text: '添加请求参数', link: 'add-request-parameter' },
+            ]
+          },
+        ]
       }
     ],
 

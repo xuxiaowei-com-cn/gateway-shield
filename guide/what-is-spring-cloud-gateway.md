@@ -6,7 +6,7 @@
 3. 主要功能包含
     1. 请求代理（反向代理）
     2. 请求参数过滤
-        1. 添加请求参数 `AddRequestParameterGatewayFilterFactory`
+        1. 添加请求参数 [AddRequestParameterGatewayFilterFactory](../feature/filter/add-request-parameter.md)
         2. 删除请求参数 `RemoveRequestParameterGatewayFilterFactory`
     3. 请求头过滤
         1. 添加请求头 `AddRequestHeaderGatewayFilterFactory`
