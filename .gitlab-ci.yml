@@ -65,35 +65,35 @@ build:
   tags:
     - jihulab
 
-build:docker:
-  stage: build
-  needs:
-    - job: build
-      artifacts: true
-  image: docker:cli
-  services:
-    - docker:dind
-  before_script:
-    - docker info
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-  script:
-    - ls gateway/target
-    - >-
-      docker build --pull -t "$CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID" .
-      --build-arg GROUP_ID=${GROUP_ID}
-      --build-arg ARTIFACT_ID=${ARTIFACT_ID}
-      --build-arg VERSION=${VERSION}
-      --build-arg CI_PIPELINE_URL=${CI_PIPELINE_URL}
-      --build-arg CI_JOB_ID=${CI_JOB_ID}
-      --build-arg JAVA_OPTS="${CI_JAVA_OPTS}"
-      --build-arg APP_ARGS=${APP_ARGS}
-    - docker images
-    - docker tag "$CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID" "$CI_REGISTRY_IMAGE:$VERSION"
-    - docker images
-    - docker push "$CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID"
-    - docker push "$CI_REGISTRY_IMAGE:$VERSION"
-  tags:
-    - jihulab
+#build:docker:
+#  stage: build
+#  needs:
+#    - job: build
+#      artifacts: true
+#  image: docker:cli
+#  services:
+#    - docker:dind
+#  before_script:
+#    - docker info
+#    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+#  script:
+#    - ls gateway/target
+#    - >-
+#      docker build --pull -t "$CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID" .
+#      --build-arg GROUP_ID=${GROUP_ID}
+#      --build-arg ARTIFACT_ID=${ARTIFACT_ID}
+#      --build-arg VERSION=${VERSION}
+#      --build-arg CI_PIPELINE_URL=${CI_PIPELINE_URL}
+#      --build-arg CI_JOB_ID=${CI_JOB_ID}
+#      --build-arg JAVA_OPTS="${CI_JAVA_OPTS}"
+#      --build-arg APP_ARGS=${APP_ARGS}
+#    - docker images
+#    - docker tag "$CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID" "$CI_REGISTRY_IMAGE:$VERSION"
+#    - docker images
+#    - docker push "$CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID"
+#    - docker push "$CI_REGISTRY_IMAGE:$VERSION"
+#  tags:
+#    - jihulab
 
 build:deploy:
   stage: build
