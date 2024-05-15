@@ -4,7 +4,6 @@ stages:
   - sync
 
 variables:
-  DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID
   GROUP_ID: cn.com.xuxiaowei.shield
   ARTIFACT_ID: gateway
   VERSION: 0.0.1-SNAPSHOT
@@ -80,7 +79,7 @@ build:docker:
   script:
     - ls gateway/target
     - >-
-      docker build --pull -t "$DOCKER_IMAGE_NAME" .
+      docker build --pull -t "$CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID" .
       --build-arg GROUP_ID=${GROUP_ID}
       --build-arg ARTIFACT_ID=${ARTIFACT_ID}
       --build-arg VERSION=${VERSION}
@@ -89,7 +88,9 @@ build:docker:
       --build-arg JAVA_OPTS="${CI_JAVA_OPTS}"
       --build-arg APP_ARGS=${APP_ARGS}
     - docker images
-    - docker push "$DOCKER_IMAGE_NAME"
+    - docker tag "$CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID" "$CI_REGISTRY_IMAGE:$VERSION"
+    - docker push "$CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID"
+    - docker push "$CI_REGISTRY_IMAGE:$VERSION"
   tags:
     - jihulab
 
