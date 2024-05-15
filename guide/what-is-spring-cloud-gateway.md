@@ -7,7 +7,7 @@
     1. 请求代理（反向代理）
     2. 请求参数过滤
         1. 添加请求参数 [AddRequestParameterGatewayFilterFactory](../feature/filter/add-request-parameter.md)
-        2. 删除请求参数 `RemoveRequestParameterGatewayFilterFactory`
+        2. 删除请求参数 [RemoveRequestParameterGatewayFilterFactory](../feature/filter/remove-request-parameter.md)
     3. 请求头过滤
         1. 添加请求头 `AddRequestHeaderGatewayFilterFactory`
         2. 删除请求头 `RemoveRequestHeaderGatewayFilterFactory`
