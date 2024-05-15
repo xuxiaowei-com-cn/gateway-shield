@@ -113,6 +113,7 @@ export default defineConfig({
               { text: '删除请求参数', link: 'remove-request-parameter' },
               { text: '添加请求头', link: 'add-request-header' },
               { text: '删除请求头', link: 'remove-request-header' },
+              { text: '设置请求头', link: 'set-request-header' },
             ]
           },
         ]

@@ -1,8 +1,8 @@
-# 添加请求头 AddRequestHeaderGatewayFilterFactory {id=add-request-header}
+# 设置请求头 SetRequestHeaderGatewayFilterFactory {id=set-request-header}
 
-- 如果通过网关代理的请求，需要添加特定的请求头，可以使用 `AddRequestHeaderGatewayFilterFactory` 过滤器
-- 添加的请求头不会覆盖已有的请求头
-    - 如需合并，请使用 [设置请求头](set-request-header.md)
+- 如果通过网关代理的请求，需要设置特定的请求头，可以使用 `SetRequestHeaderGatewayFilterFactory` 过滤器
+- 添加的请求头会覆盖已有的请求头（不合并已有的请求头）
+    - 如需合并，请使用 [添加请求头](add-request-header.md)
 - 请使用驼峰命名法定义请求头的名称（否则可能会出现重复的请求头）
 
 ```java
@@ -13,20 +13,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.cloud.gateway.filter.factory.AddRequestHeaderGatewayFilterFactory;
+import org.springframework.cloud.gateway.filter.factory.SetRequestHeaderGatewayFilterFactory;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
 
-import static cn.com.xuxiaowei.shield.gateway.filter.factory.AddRequestHeaderGatewayFilterFactoryTests.*;
+import static cn.com.xuxiaowei.shield.gateway.filter.factory.SetRequestHeaderGatewayFilterFactoryTests.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author xuxiaowei
  * @since 0.0.1
- * @see AddRequestHeaderGatewayFilterFactory
+ * @see SetRequestHeaderGatewayFilterFactory
  */
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,19 +35,19 @@ import static org.junit.jupiter.api.Assertions.*;
         "spring.cloud.gateway.routes[0].id=demo",
         "spring.cloud.gateway.routes[0].uri=http://localhost:45678",
         "spring.cloud.gateway.routes[0].predicates[0]=Host=demo.localdev.me:*",
-        "spring.cloud.gateway.routes[0].filters[0].name=AddRequestHeader",
+        "spring.cloud.gateway.routes[0].filters[0].name=SetRequestHeader",
         "spring.cloud.gateway.routes[0].filters[0].args.name=" + NAME,
         "spring.cloud.gateway.routes[0].filters[0].args.value=" + VALUE,
 
-        "spring.cloud.gateway.routes[1].id=ua",
-        "spring.cloud.gateway.routes[1].uri=http://localhost:45678",
-        "spring.cloud.gateway.routes[1].predicates[0]=Host=ua.localdev.me:*",
-        "spring.cloud.gateway.routes[1].filters[0].name=AddRequestHeader",
-        "spring.cloud.gateway.routes[1].filters[0].args.name=" + UA_NAME,
-        "spring.cloud.gateway.routes[1].filters[0].args.value=" + UA_VALUE,
+		"spring.cloud.gateway.routes[1].id=ua",
+		"spring.cloud.gateway.routes[1].uri=http://localhost:45678",
+		"spring.cloud.gateway.routes[1].predicates[0]=Host=ua.localdev.me:*",
+		"spring.cloud.gateway.routes[1].filters[0].name=SetRequestHeader",
+		"spring.cloud.gateway.routes[1].filters[0].args.name=" + UA_NAME,
+		"spring.cloud.gateway.routes[1].filters[0].args.value=" + UA_VALUE,
 })
 // @formatter:on
-class AddRequestHeaderGatewayFilterFactoryTests {
+class SetRequestHeaderGatewayFilterFactoryTests {
 
     static final String NAME = "abc-xuxiaowei";
 
@@ -99,7 +99,7 @@ class AddRequestHeaderGatewayFilterFactoryTests {
         assertInstanceOf(List.class, valueObj);
 
         List<String> list = (List<String>) valueObj;
-        assertEquals(2, list.size());
+        assertEquals(1, list.size());
         assertTrue(list.contains(UA_VALUE));
     }
 
