@@ -111,6 +111,7 @@ export default defineConfig({
             items: [
               { text: '添加请求参数', link: 'add-request-parameter' },
               { text: '删除请求参数', link: 'remove-request-parameter' },
+              { text: '添加请求头', link: 'add-request-header' },
             ]
           },
         ]
