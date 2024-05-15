@@ -3,7 +3,7 @@
 - 如果通过网关代理的请求，需要设置特定的请求头，可以使用 `SetRequestHeaderGatewayFilterFactory` 过滤器
 - 添加的请求头会覆盖已有的请求头（不合并已有的请求头）
     - 如需合并，请使用 [添加请求头](add-request-header.md)
-- 请使用驼峰命名法定义请求头的名称（否则可能会出现重复的请求头）
+- 请使用大写驼峰命名法定义请求头的名称（否则可能会出现重复的请求头）
 
 ```java
 package cn.com.xuxiaowei.shield.gateway.filter.factory;
