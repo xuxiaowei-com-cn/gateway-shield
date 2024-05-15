@@ -51,7 +51,7 @@ class IndexRestControllerTests {
 
 		String proto = "http";
 		String host = "demo.localdev.me:" + serverPort;
-		String url = String.format("%s://%s", proto, host);
+		String url = String.format("%s://%s/header", proto, host);
 
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -75,7 +75,7 @@ class IndexRestControllerTests {
 	@Test
 	void headerNamesAuthorization() {
 
-		String url = String.format("http://demo.localdev.me:%s", serverPort);
+		String url = String.format("http://demo.localdev.me:%s/header", serverPort);
 
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();

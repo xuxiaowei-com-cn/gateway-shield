@@ -16,7 +16,8 @@ import java.util.Map;
  * @since 0.0.1
  */
 @RestController
-public class IndexRestController {
+@RequestMapping("/header")
+public class HeaderRestController {
 
 	/**
 	 * @param request

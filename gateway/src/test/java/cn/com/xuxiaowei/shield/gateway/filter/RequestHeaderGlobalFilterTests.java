@@ -45,7 +45,7 @@ public class RequestHeaderGlobalFilterTests {
 	void filter() throws IOException {
 		String proto = "http";
 		String host = "demo.localdev.me:" + serverPort;
-		String url = String.format("%s://%s", proto, host);
+		String url = String.format("%s://%s/header", proto, host);
 
 		RestTemplate restTemplate = new RestTemplate();
 
