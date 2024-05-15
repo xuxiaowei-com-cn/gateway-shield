@@ -105,7 +105,7 @@ export default defineConfig({
             ]
           },
           {
-            text: '过滤器',
+            text: '默认过滤器',
             collapsed: false,
             base: '/feature/filter/',
             items: [
