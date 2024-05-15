@@ -105,7 +105,17 @@ export default defineConfig({
             ]
           },
         ]
-      }
+      },
+      {
+        text: '常见问题',
+        collapsed: false,
+        items: [
+          { text: 'application、bootstrap 配置文件乱码、警告等问题', link: 'https://docs.xuxiaowei.cloud/spring-cloud-xuxiaowei/question/application-error.html' },
+          { text: 'jar 包无法启动？', link: 'https://docs.xuxiaowei.cloud/spring-cloud-xuxiaowei/question/jar-start-failed.html' },
+          { text: 'mvn test 无效？', link: 'https://docs.xuxiaowei.cloud/spring-cloud-xuxiaowei/question/mvn-test-invalid.html' },
+          { text: 'mvn test 异常？', link: 'https://docs.xuxiaowei.cloud/spring-cloud-xuxiaowei/question/mvn-test-failed.html' },
+        ]
+      },
     ],
 
     socialLinks: [
