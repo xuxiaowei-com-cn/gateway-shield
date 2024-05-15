@@ -83,6 +83,7 @@ jobs:
         run: |
           mysql --version
           mysql -u ${GATEWAY_SHIELD_DATABASE_USERNAME} -p${GATEWAY_SHIELD_DATABASE_PASSWORD} --host=${GATEWAY_SHIELD_DATABASE_HOST} ${GATEWAY_SHIELD_DATABASE} < sql/gateway_shield.sql
+          mysql -u ${GATEWAY_SHIELD_DATABASE_USERNAME} -p${GATEWAY_SHIELD_DATABASE_PASSWORD} --host=${GATEWAY_SHIELD_DATABASE_HOST} ${GATEWAY_SHIELD_DATABASE} < sql/init_config.sql
 
       - name: Build with Maven
         run: mvn clean package source:jar javadoc:jar -U -DskipTests=true

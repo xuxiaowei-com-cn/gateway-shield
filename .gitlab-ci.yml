@@ -45,6 +45,7 @@ build:
       sleep 20s;
       fi
     - mysql --version
+    - mysql -u ${GATEWAY_SHIELD_DATABASE_USERNAME} -p${GATEWAY_SHIELD_DATABASE_PASSWORD} --host=${GATEWAY_SHIELD_DATABASE_HOST} ${GATEWAY_SHIELD_DATABASE} < sql/init_config.sql
     - mysql -u ${GATEWAY_SHIELD_DATABASE_USERNAME} -p${GATEWAY_SHIELD_DATABASE_PASSWORD} --host=${GATEWAY_SHIELD_DATABASE_HOST} ${GATEWAY_SHIELD_DATABASE} < sql/gateway_shield.sql
   script:
     - free -h || cat /proc/meminfo
