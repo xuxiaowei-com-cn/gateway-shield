@@ -114,6 +114,7 @@ export default defineConfig({
               { text: '添加请求头', link: 'add-request-header' },
               { text: '删除请求头', link: 'remove-request-header' },
               { text: '设置请求头', link: 'set-request-header' },
+              { text: '复制请求头', link: 'map-request-header' },
             ]
           },
         ]
