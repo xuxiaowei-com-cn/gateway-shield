@@ -98,6 +98,13 @@ export default defineConfig({
         collapsed: false,
         items: [
           {
+            text: 'Boot',
+            collapsed: true,
+            items: [
+              { text: '@TestPropertySource 注解', link: 'https://docs.xuxiaowei.cloud/spring-cloud-xuxiaowei/feature/boot/test-property-source.html' },
+            ]
+          },
+          {
             text: '过滤器',
             collapsed: true,
             base: '/feature/filter/',
