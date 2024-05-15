@@ -90,6 +90,7 @@ build:docker:
     - docker images
     - docker tag "$CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID" "$CI_REGISTRY_IMAGE:$VERSION"
     - docker push "$CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID"
+    - docker images
     - docker push "$CI_REGISTRY_IMAGE:$VERSION"
   tags:
     - jihulab
