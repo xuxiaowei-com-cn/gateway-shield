@@ -106,10 +106,11 @@ export default defineConfig({
           },
           {
             text: '过滤器',
-            collapsed: true,
+            collapsed: false,
             base: '/feature/filter/',
             items: [
               { text: '添加请求参数', link: 'add-request-parameter' },
+              { text: '删除请求参数', link: 'remove-request-parameter' },
             ]
           },
         ]
