@@ -10,9 +10,9 @@
         2. 删除请求参数 [RemoveRequestParameterGatewayFilterFactory](../feature/filter/remove-request-parameter.md)
     3. 请求头过滤
         1. 添加请求头 [AddRequestHeaderGatewayFilterFactory](../feature/filter/add-request-header.md)
-        2. 删除请求头 `RemoveRequestHeaderGatewayFilterFactory`
-        3. `SetRequestHeaderGatewayFilterFactory`
-        4. 转换请求头 `MapRequestHeaderGatewayFilterFactory`
+        2. 删除请求头 [RemoveRequestHeaderGatewayFilterFactory](../feature/filter/remove-request-header.md)
+        3. 设置请求头 [SetRequestHeaderGatewayFilterFactory](../feature/filter/set-request-header.md)
+        4. 复制请求头 [MapRequestHeaderGatewayFilterFactory](../feature/filter/map-request-header.md)
     4. 响应头过滤
         1. 添加响应头 `AddResponseHeaderGatewayFilterFactory`
         2. 删除响应头 `RemoveResponseHeaderGatewayFilterFactory`
