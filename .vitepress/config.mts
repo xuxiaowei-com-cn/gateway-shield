@@ -117,6 +117,7 @@ export default defineConfig({
               { text: '复制请求头', link: 'map-request-header' },
               { text: '添加响应头', link: 'add-response-header' },
               { text: '删除响应头', link: 'remove-response-header' },
+              { text: '设置响应头', link: 'set-response-header' },
             ]
           },
         ]
