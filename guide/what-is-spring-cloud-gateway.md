@@ -14,9 +14,9 @@
         3. 设置请求头 [SetRequestHeaderGatewayFilterFactory](../feature/filter/set-request-header.md)
         4. 复制请求头 [MapRequestHeaderGatewayFilterFactory](../feature/filter/map-request-header.md)
     4. 响应头过滤
-        1. 添加响应头 `AddResponseHeaderGatewayFilterFactory`
-        2. 删除响应头 `RemoveResponseHeaderGatewayFilterFactory`
-        3. `SetResponseHeaderGatewayFilterFactory`
+        1. 添加响应头 [AddResponseHeaderGatewayFilterFactory](../feature/filter/add-response-header.md)
+        2. 删除响应头 [RemoveResponseHeaderGatewayFilterFactory](../feature/filter/remove-response-header.md)
+        3. 设置响应头 [SetResponseHeaderGatewayFilterFactory](../feature/filter/set-response-header.md)
         4. 删除重复的响应头 `DedupeResponseHeaderGatewayFilterFactory`，通常与 CORS 跨域资源共享 相关
     5. 其他过滤
         1. 重定向 `RedirectToGatewayFilterFactory`
