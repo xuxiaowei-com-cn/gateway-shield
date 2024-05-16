@@ -119,6 +119,7 @@ export default defineConfig({
               { text: '删除响应头', link: 'remove-response-header' },
               { text: '设置响应头', link: 'set-response-header' },
               { text: '删除重复的响应头', link: 'dedupe-response-header' },
+              { text: '重定向', link: 'redirect-to' },
             ]
           },
         ]
