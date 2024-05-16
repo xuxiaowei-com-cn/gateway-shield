@@ -21,7 +21,7 @@
            通常与 CORS 跨域资源共享 相关
     5. 其他过滤
         1. 重定向 [RedirectToGatewayFilterFactory](../feature/filter/redirect-to.md)
-        2. 修改请求路径 `RewritePathGatewayFilterFactory`
+        2. 修改请求路径 [RewritePathGatewayFilterFactory](../feature/filter/rewrite-path.md)
         3. 请求路径处理 `PrefixPathGatewayFilterFactory`
         4. Host 处理 `PreserveHostHeaderGatewayFilterFactory`
         5. 请求速率限制 `RequestRateLimiterGatewayFilterFactory`
