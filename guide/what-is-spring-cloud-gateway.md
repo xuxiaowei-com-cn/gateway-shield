@@ -17,7 +17,8 @@
         1. 添加响应头 [AddResponseHeaderGatewayFilterFactory](../feature/filter/add-response-header.md)
         2. 删除响应头 [RemoveResponseHeaderGatewayFilterFactory](../feature/filter/remove-response-header.md)
         3. 设置响应头 [SetResponseHeaderGatewayFilterFactory](../feature/filter/set-response-header.md)
-        4. 删除重复的响应头 `DedupeResponseHeaderGatewayFilterFactory`，通常与 CORS 跨域资源共享 相关
+        4. 删除重复的响应头 [DedupeResponseHeaderGatewayFilterFactory](../feature/filter/dedupe-response-header.md)，
+           通常与 CORS 跨域资源共享 相关
     5. 其他过滤
         1. 重定向 `RedirectToGatewayFilterFactory`
         2. 修改请求路径 `RewritePathGatewayFilterFactory`
