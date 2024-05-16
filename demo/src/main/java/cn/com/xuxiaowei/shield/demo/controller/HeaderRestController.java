@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author xuxiaowei
@@ -25,8 +22,8 @@ public class HeaderRestController {
 	 * @return
 	 */
 	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
-	public Map<String, Object> index(HttpServletRequest request, HttpServletResponse response) {
-		Map<String, Object> map = new HashMap<>(8);
+	public Map<String, List<String>> index(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, List<String>> map = new HashMap<>(8);
 
 		Enumeration<String> headerNames = request.getHeaderNames();
 		while (headerNames.hasMoreElements()) {
