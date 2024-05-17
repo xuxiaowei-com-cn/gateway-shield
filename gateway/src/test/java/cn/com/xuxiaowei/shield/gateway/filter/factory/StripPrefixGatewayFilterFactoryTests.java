@@ -33,11 +33,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 		// 将 demo.localdev.me:* 的所有请求转发到 http://localhost:45678，并且删除路径的前2个前缀（使用 / 分割）
 
-		"spring.cloud.gateway.routes[0].id=demo-1",
-		"spring.cloud.gateway.routes[0].uri=http://localhost:45678",
-		"spring.cloud.gateway.routes[0].predicates[0]=Host=demo-1.localdev.me:*",
-		"spring.cloud.gateway.routes[0].filters[0].name=StripPrefix",
-		"spring.cloud.gateway.routes[0].filters[0].args.parts=2",
+		"spring.cloud.gateway.routes[1].id=demo-1",
+		"spring.cloud.gateway.routes[1].uri=http://localhost:45678",
+		"spring.cloud.gateway.routes[1].predicates[0]=Host=demo-1.localdev.me:*",
+		"spring.cloud.gateway.routes[1].filters[0].name=StripPrefix",
+		"spring.cloud.gateway.routes[1].filters[0].args.parts=2",
 })
 // @formatter:on
 class StripPrefixGatewayFilterFactoryTests {
