@@ -29,6 +29,7 @@ import org.springframework.context.annotation.Configuration;
  * @see PrefixPathGatewayFilterFactory
  * @see PreserveHostHeaderGatewayFilterFactory
  * @see RequestRateLimiterGatewayFilterFactory
+ * @see StripPrefixGatewayFilterFactory
  */
 @Slf4j
 @Configuration
