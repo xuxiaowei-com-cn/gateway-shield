@@ -25,3 +25,4 @@
         3. 请求路径处理 `PrefixPathGatewayFilterFactory`
         4. Host 处理 `PreserveHostHeaderGatewayFilterFactory`
         5. 请求速率限制 `RequestRateLimiterGatewayFilterFactory`
+        6. 删除路径前缀 `StripPrefixGatewayFilterFactory`
