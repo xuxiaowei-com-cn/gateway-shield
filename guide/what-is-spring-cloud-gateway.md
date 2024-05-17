@@ -22,8 +22,7 @@
     5. 其他过滤
         1. 重定向 [RedirectToGatewayFilterFactory](../feature/filter/redirect-to.md)
         2. 修改请求路径 [RewritePathGatewayFilterFactory](../feature/filter/rewrite-path.md)
-        3. 请求路径处理 `PrefixPathGatewayFilterFactory`
-        4. Host 处理 `PreserveHostHeaderGatewayFilterFactory`
-        5. 请求速率限制 `RequestRateLimiterGatewayFilterFactory`
-        6. 删除路径前缀 `StripPrefixGatewayFilterFactory`
-        7. 增加路径前缀 `PrefixPathGatewayFilterFactory`
+        3. Host 处理 `PreserveHostHeaderGatewayFilterFactory`
+        4. 请求速率限制 `RequestRateLimiterGatewayFilterFactory`
+        5. 删除路径前缀 [StripPrefixGatewayFilterFactory](../feature/filter/strip-prefix.md)
+        6. 增加路径前缀 [PrefixPathGatewayFilterFactory](../feature/filter/prefix-path.md)
