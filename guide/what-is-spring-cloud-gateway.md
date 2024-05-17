@@ -3,7 +3,7 @@
 1. Spring Cloud Gateway 是由 Java 开发 Spring Cloud 微服中的一个重要成员，
    在微服务开发中不可或缺
 2. 可脱离微服务开发模式独立运行，本项目为单体项目
-3. 主要功能包含
+3. 主要功能包含：大约 `43` 个过滤器
     1. 请求代理（反向代理）
     2. 请求参数过滤
         1. 添加请求参数 [AddRequestParameterGatewayFilterFactory](../feature/filter/add-request-parameter.md)
@@ -26,3 +26,4 @@
         4. Host 处理 `PreserveHostHeaderGatewayFilterFactory`
         5. 请求速率限制 `RequestRateLimiterGatewayFilterFactory`
         6. 删除路径前缀 `StripPrefixGatewayFilterFactory`
+        7. 增加路径前缀 `PrefixPathGatewayFilterFactory`

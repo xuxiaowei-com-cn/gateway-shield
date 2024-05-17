@@ -122,6 +122,7 @@ export default defineConfig({
               { text: '重定向', link: 'redirect-to' },
               { text: '修改请求路径', link: 'rewrite-path' },
               { text: '删除路径前缀', link: 'strip-prefix' },
+              { text: '增加路径前缀', link: 'prefix-path' },
             ]
           },
         ]
