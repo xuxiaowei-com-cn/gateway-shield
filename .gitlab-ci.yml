@@ -11,7 +11,7 @@ variables:
 
 build:
   stage: build
-  image: xuxiaoweicomcn/maven-mysql-client:3.6.3-openjdk-17
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/xuxiaoweicomcn/maven-mysql-client:3.6.3-openjdk-17
   variables:
     MAVEN_OPTS: >-
       -Dhttps.protocols=TLSv1.2
@@ -33,12 +33,12 @@ build:
     GATEWAY_SHIELD_REDIS_HOST: redis
     GATEWAY_SHIELD_REDIS_PASSWORD: ""
   services:
-    - name: mysql:8.3.0
+    - name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/mysql:8.3.0
       alias: $GATEWAY_SHIELD_DATABASE_HOST
       variables:
         MYSQL_ROOT_PASSWORD: $GATEWAY_SHIELD_DATABASE_PASSWORD
         MYSQL_DATABASE: $GATEWAY_SHIELD_DATABASE
-    - name: redis:7.2.4
+    - name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/redis:7.2.4
       alias: $GATEWAY_SHIELD_REDIS_HOST
   before_script:
     - if [ $CI_SERVER_HOST == 'gitlab.helm.xuxiaowei.cn' ]; then
@@ -99,7 +99,7 @@ build:
 build:docker:
   stage: build
   image:
-    name: xuxiaoweicomcn/kaniko-project-executor:v1.22.0-debug
+    name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/xuxiaoweicomcn/kaniko-project-executor:v1.22.0-debug
     entrypoint: [ "" ]
   needs:
     - job: build
@@ -131,7 +131,7 @@ build:deploy:
   stage: build
   needs:
     - job: build:docker
-  image: docker:cli
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:cli
   variables:
     DOCKER_HOST: $DEPLOY_DOCKER_HOST
   script:
