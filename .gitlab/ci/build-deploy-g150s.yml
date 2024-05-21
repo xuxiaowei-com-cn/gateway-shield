@@ -1,0 +1,13 @@
+build:deploy:g150s:
+  stage: build
+  needs:
+    - job: build:docker
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:cli
+  variables:
+    DOCKER_HOST: $DEPLOY_DOCKER_HOST
+  script:
+    - docker info
+    - docker compose up -d
+  environment: production/g150s
+  tags:
+    - g150s-docker
