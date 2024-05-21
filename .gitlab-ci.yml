@@ -17,4 +17,5 @@ include:
   - local: .gitlab/ci/build-docker.yml
   - local: .gitlab/ci/build-deploy.yml
   - local: .gitlab/ci/build-deploy-g150s.yml
+  - local: .gitlab/ci/build-deploy-911k.yml
   - local: .gitlab/ci/sync.yml
