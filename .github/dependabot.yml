@@ -7,6 +7,15 @@ version: 2
 updates:
   - package-ecosystem: "maven" # See documentation for possible values
     directory: "/" # Location of package manifests
+    target-branch: "main"
+    schedule:
+      interval: "daily"
+      time: "00:00"
+      timezone: "Asia/Shanghai"
+
+  - package-ecosystem: npm
+    directory: "/"
+    target-branch: "docs"
     schedule:
       interval: "daily"
       time: "00:00"
