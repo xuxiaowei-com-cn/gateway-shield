@@ -23,6 +23,55 @@
 2. `docker-compose.yml` 文件内容如下：可选择 `国内镜像版` 或 `docker hub 版`
 3. 根据自己情况做修改
     1. 体验过程可不用修改
+4. 下表为 `docker-compose.yml` 文件中的环境变量
+    1. 如果要设置 `https`，可配置环境变量
+       ```shell
+       # --server.ssl.certificate：指定证书的文件路径
+       # --server.ssl.certificate-private-key=：指定证书秘钥的文件路径
+       export GATEWAY_SHIELD_APP_ARGS="--server.ssl.certificate=/config/xuxiaowei.com.cn.crt --server.ssl.certificate-private-key=/config/xuxiaowei.com.cn.key"
+       ```
+    2. 如果要启用 `http2`，可配置环境变量
+       ```shell
+       # --server.http2.enabled=true：用于启用 http2，启用 http2 必须配置 https
+       # --server.ssl.certificate：指定证书的文件路径
+       # --server.ssl.certificate-private-key=：指定证书秘钥的文件路径
+       export GATEWAY_SHIELD_APP_ARGS="--server.http2.enabled=true --server.ssl.certificate=/config/xuxiaowei.com.cn.crt --server.ssl.certificate-private-key=/config/xuxiaowei.com.cn.key"
+       ```
+    3. 获取访问者的 `运营商信息` 和 `城市信息`，
+       请访问 [免费下载 GeoIP 数据库（需要登陆）](https://www.maxmind.com/en/accounts/current/geoip/downloads)
+       下载数据库文件并配置环境变量
+        1. `GeoLite2 ASN` `Download GZIP` 包含运营商信息
+            ```shell
+            # 下载 GeoLite2 ASN 的 GZIP 文件并解压，可得到 运营商 数据库文件：GeoLite2-ASN.mmdb
+            export GATEWAY_SHIELD_ENABLE_ASN=true GATEWAY_SHIELD_ASN_DATABASE=/config/GeoLite2-ASN_20240510/GeoLite2-ASN.mmdb
+            ```
+        2. `GeoLite2 City` `Download GZIP` 包含城市信息
+            ```shell
+            # 下载 GeoLite2 City 的 GZIP 文件并解压，可得到 城市 数据库文件：GeoLite2-City.mmdb
+            export GATEWAY_SHIELD_ENABLE_CITY=true GATEWAY_SHIELD_CITY_DATABASE=/config/GeoLite2-City_20240510/GeoLite2-City.mmdb
+            ```
+
+| 环境变量                             | 默认值                  | 说明                         |
+|----------------------------------|----------------------|----------------------------|
+| GATEWAY_HOME                     |                      | 数据挂载根目录                    |
+| GATEWAY_SHIELD_PORT              | 45450                | 端口，可用于配置 https             |
+| GATEWAY_SHIELD_PORT_HTTP         | 45455                | 端口，仅用于 http 协议             |
+| GATEWAY_SHIELD_REDIS_HOST        | gateway-shield-redis | 连接 Redis 的地址               |
+| GATEWAY_SHIELD_REDIS_PORT        | 6379                 | 连接 Redis 的端口               |
+| GATEWAY_SHIELD_REDIS_DATABASE    | 8                    | 连接 Redis 的数据库              |
+| GATEWAY_SHIELD_REDIS_PASSWORD    |                      | 连接 Redis 的密码               |
+| GATEWAY_SHIELD_DATABASE_HOST     | gateway-shield-mysql | 连接 MySQL 的地址               |
+| GATEWAY_SHIELD_DATABASE_PORT     | 3306                 | 连接 MySQL 的端口               |
+| GATEWAY_SHIELD_DATABASE          | gateway_shield       | 连接 MySQL 的数据库              |
+| GATEWAY_SHIELD_DATABASE_USERNAME | root                 | 连接 MySQL 的用户名              |
+| GATEWAY_SHIELD_DATABASE_PASSWORD | xuxiaowei.com.cn     | 连接 MySQL 密码                |
+| GATEWAY_SHIELD_REDIS_ROUTE       | false                | 是否 启用 Redis 路由             |
+| GATEWAY_SHIELD_ROUTES_PATH       |                      | Redis 路由 地址                |
+| GATEWAY_SHIELD_ENABLE_ASN        | false                | 是否 启用 ASN，可用于获取访问者网络运营商的信息 |
+| GATEWAY_SHIELD_ASN_DATABASE      |                      | ASN 的数据库（文件地址）             |
+| GATEWAY_SHIELD_ENABLE_CITY       | false                | 是否 启用 获取访问者所在的城市信息         |
+| GATEWAY_SHIELD_CITY_DATABASE     |                      | 城市信息 的数据库（文件地址）            |
+| GATEWAY_SHIELD_APP_ARGS          |                      | 启动参数                       |
 
 ::: code-group
 
