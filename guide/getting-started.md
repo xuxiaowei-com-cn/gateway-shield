@@ -255,47 +255,74 @@ export GATEWAY_SHIELD_REDIS_ROUTE=true GATEWAY_SHIELD_ROUTES_PATH=/route && dock
     - 本文使用直接在服务器上操作添加 Redis 路由数据
 
 1. 进入到 redis 容器内
-    ```shell
+   ::: code-group
+    ```shell [执行命令]
     docker exec -it gateway-shield-redis bash
     ```
-    ```shell
+    ```shell [操作示例的过程]
     [root@anolis ~]# docker exec -it gateway-shield-redis bash
     root@57654b5bdf57:/data#
     ```
+   :::
 2. 进入 redis 命令行中
-    ```shell
+   ::: code-group
+    ```shell [执行命令]
     redis-cli
     ```
-    ```shell
+    ```shell [操作示例的过程]
     [root@anolis ~]# docker exec -it gateway-shield-redis bash
     root@57654b5bdf57:/data# redis-cli
     127.0.0.1:6379>
     ```
+   :::
 3. 选择 8 号数据库
-    ```shell
+   ::: code-group
+    ```shell [执行命令]
     select 8
     ```
-    ```shell
+    ```shell [操作示例的过程]
     [root@anolis ~]# docker exec -it gateway-shield-redis bash
     root@57654b5bdf57:/data# redis-cli
     127.0.0.1:6379> select 8
     OK
     127.0.0.1:6379[8]>
     ```
+   :::
 4. 添加数据
-    ```shell
+   ::: code-group
+    ```shell [在 Redis 中添加 路由数据]
+    # Redis key 必须使用 routedefinition_ 开头
+    # Redis key 使用 : 可以在 Redis 管理工具中进行折叠，方便操作
     set routedefinition_:www.baidu.com "{\"id\":\"www-baidu-com\",\"predicates\":[{\"name\":\"Host\",\"args\":{\"args1\":\"baidu.example.com:*\"}}],\"filters\":[],\"uri\":\"https://www.baidu.com\",\"metadata\":{},\"order\": 0}"
     ```
-    ```shell
-    [root@anolis ~]# docker exec -it gateway-shield-redis bash
-    root@57654b5bdf57:/data# redis-cli
-    127.0.0.1:6379> select 8
-    OK
-    127.0.0.1:6379[8]> set routedefinition_:www.baidu.com "{\"id\":\"www-baidu-com\",\"predicates\":[{\"name\":\"Host\",\"args\":{\"args1\":\"baidu.example.com:*\"}}],\"filters\":[],\"uri\":\"https://www.baidu.com\",\"metadata\":{},\"order\": 0}"
-    OK
-    127.0.0.1:6379[8]>
+    ```json5 [路由数据 解释]
+    {
+      // id：唯一就行
+      "id": "www-baidu-com",
+      // 配置代理时的匹配规则，可配置多个值
+      "predicates": [
+        {
+          // Host：根据域名匹配
+          "name": "Host",
+          "args": {
+            // args1：代表 key，不能重复
+            // baidu.example.com:*：匹配的域名，其中 * 代表所有端口
+            // 如果配置的是 baidu.example.com，支持 http://baidu.example.com、https://baidu.example.com，但不支持 https://baidu.example.com:443
+            // 此处可配置多个值，只要 key 不同即可
+            "args1": "baidu.example.com:*"
+          }
+        }
+      ],
+      "filters": [],
+      // 代理的目标地址
+      "uri": "https://www.baidu.com",
+      "metadata": {
+    
+      },
+      "order": 0
+    }
     ```
-    ```shell
+    ```shell [操作示例的过程]
     [root@anolis ~]# docker exec -it gateway-shield-redis bash
     root@57654b5bdf57:/data# redis-cli
     127.0.0.1:6379> select 8
@@ -306,6 +333,7 @@ export GATEWAY_SHIELD_REDIS_ROUTE=true GATEWAY_SHIELD_ROUTES_PATH=/route && dock
     "{\"id\":\"www-baidu-com\",\"predicates\":[{\"name\":\"Host\",\"args\":{\"args1\":\"baidu.example.com:*\"}}],\"filters\":[],\"uri\":\"https://www.baidu.com\",\"metadata\":{},\"order\": 0}"
     127.0.0.1:6379[8]>
     ```
+   :::
 
 ### 刷新路由
 
