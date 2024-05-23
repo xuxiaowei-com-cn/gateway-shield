@@ -1,1 +1,279 @@
-# 快速开始（未完成）
+# 快速开始{id=getting-started}
+
+[[toc]]
+
+## 前提 {id=description}
+
+1. 本项目需要使用域名进行代理，本文使用测试域名 `baidu.example.com` 来代理 `百度` https://www.baidu.com
+2. 本文使用的默认端口有 `45450`、`45455`，按照本文正确配置后，可以使用
+   http://baidu.example.com:45450、http://baidu.example.com:45455 来访问 `百度`：[体验代理效果](#result)
+3. 需要注意：
+    1. 开放防火墙的 `45450`、`45455` 端口，
+        1. 若自定义了端口，需要使用自己定义的端口进行测试
+    2. 由于使用域名代理，访问 域名 `baidu.example.com` 测试的机器，需要在 本机 `hosts` 文件中添加该域名解析到运行本项目服务器的
+       IP
+        1. Windows hosts 文件位置 `C:\Windows\System32\drivers\etc\hosts`
+        2. Linux hosts 文件位置 `/etc/hosts`
+
+## 使用 docker compose 部署 {id=docker-compose}
+
+### docker-compose.yml {id=docker-compose.yml}
+
+1. 在服务器中新建 `docker-compose.yml` 文件
+2. `docker-compose.yml` 文件内容如下：可选择 `国内镜像版` 或 `docker hub 版`
+3. 根据自己情况做修改
+    1. 体验过程可不用修改
+
+::: code-group
+
+```yaml [使用 国内 镜像]
+services:
+  gateway-shield:
+    image: registry.jihulab.com/xuxiaowei-jihu/xuxiaowei-com-cn/gateway-shield:0.0.1-SNAPSHOT
+    restart: always
+    container_name: gateway-shield
+    networks:
+      gateway-shield:
+    ports:
+      - ${GATEWAY_SHIELD_PORT:-45450}:${GATEWAY_SHIELD_PORT:-45450}
+      - ${GATEWAY_SHIELD_PORT_HTTP:-45455}:${GATEWAY_SHIELD_PORT_HTTP:-45455}
+    volumes:
+      - ${GATEWAY_HOME:-}/gateway-shield/logs:/logs
+      - ${GATEWAY_HOME:-}/gateway-shield/config:/config
+    environment:
+      - GATEWAY_SHIELD_PORT=${GATEWAY_SHIELD_PORT:-45450}
+      - GATEWAY_SHIELD_PORT_HTTP=${GATEWAY_SHIELD_PORT_HTTP:-45455}
+      - GATEWAY_SHIELD_REDIS_HOST=${GATEWAY_SHIELD_REDIS_HOST:-gateway-shield-redis}
+      - GATEWAY_SHIELD_REDIS_PORT=${GATEWAY_SHIELD_REDIS_PORT:-6379}
+      - GATEWAY_SHIELD_REDIS_DATABASE=${GATEWAY_SHIELD_REDIS_DATABASE:-8}
+      - GATEWAY_SHIELD_REDIS_PASSWORD=${GATEWAY_SHIELD_REDIS_PASSWORD:-}
+      - GATEWAY_SHIELD_DATABASE_HOST=${GATEWAY_SHIELD_DATABASE_HOST:-gateway-shield-mysql}
+      - GATEWAY_SHIELD_DATABASE_PORT=${GATEWAY_SHIELD_DATABASE_PORT:-3306}
+      - GATEWAY_SHIELD_DATABASE=${GATEWAY_SHIELD_DATABASE:-gateway_shield}
+      - GATEWAY_SHIELD_DATABASE_USERNAME=${GATEWAY_SHIELD_DATABASE_USERNAME:-root}
+      - GATEWAY_SHIELD_DATABASE_PASSWORD=${GATEWAY_SHIELD_DATABASE_PASSWORD:-xuxiaowei.com.cn}
+      - GATEWAY_SHIELD_REDIS_ROUTE=${GATEWAY_SHIELD_REDIS_ROUTE:-false}
+      - GATEWAY_SHIELD_ROUTES_PATH=${GATEWAY_SHIELD_ROUTES_PATH:-}
+      - GATEWAY_SHIELD_ENABLE_ASN=${GATEWAY_SHIELD_ENABLE_ASN:-false}
+      - GATEWAY_SHIELD_ASN_DATABASE=${GATEWAY_SHIELD_ASN_DATABASE:-}
+      - GATEWAY_SHIELD_ENABLE_CITY=${GATEWAY_SHIELD_ENABLE_CITY:-false}
+      - GATEWAY_SHIELD_CITY_DATABASE=${GATEWAY_SHIELD_CITY_DATABASE:-}
+      - APP_ARGS=${GATEWAY_SHIELD_APP_ARGS:-}
+    depends_on:
+      gateway-shield-mysql:
+        condition: service_healthy
+      gateway-shield-redis:
+        condition: service_healthy
+  gateway-shield-mysql:
+    image: registry.jihulab.com/xuxiaowei-jihu/xuxiaowei-cloud/spring-cloud-xuxiaowei/mysql:8.3.0
+    restart: always
+    container_name: gateway-shield-mysql
+    networks:
+      gateway-shield:
+    command:
+      - --log-bin=mysql-bin
+      - --binlog_expire_logs_seconds=1209600
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+    volumes:
+      - ${GATEWAY_HOME:-}/gateway-shield-mysql/data:/var/lib/mysql
+      - ${GATEWAY_HOME:-}/gateway-shield-mysql/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
+      interval: 5s
+      retries: 5
+      start_period: 30s
+    environment:
+      - MYSQL_ROOT_PASSWORD=${GATEWAY_SHIELD_DATABASE_PASSWORD:-xuxiaowei.com.cn}
+      - MYSQL_DATABASE=${GATEWAY_SHIELD_DATABASE:-gateway_shield}
+  gateway-shield-redis:
+    image: registry.jihulab.com/xuxiaowei-jihu/xuxiaowei-cloud/spring-cloud-xuxiaowei/redis:7.2.4
+    restart: always
+    container_name: gateway-shield-redis
+    networks:
+      gateway-shield:
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+networks:
+  gateway-shield:
+```
+
+```yaml [使用 docker hub 镜像]
+services:
+  gateway-shield:
+    image: xuxiaoweicomcn/gateway-shield:0.0.1-SNAPSHOT
+    restart: always
+    container_name: gateway-shield
+    networks:
+      gateway-shield:
+    ports:
+      - ${GATEWAY_SHIELD_PORT:-45450}:${GATEWAY_SHIELD_PORT:-45450}
+      - ${GATEWAY_SHIELD_PORT_HTTP:-45455}:${GATEWAY_SHIELD_PORT_HTTP:-45455}
+    volumes:
+      - ${GATEWAY_HOME:-}/gateway-shield/logs:/logs
+      - ${GATEWAY_HOME:-}/gateway-shield/config:/config
+    environment:
+      - GATEWAY_SHIELD_PORT=${GATEWAY_SHIELD_PORT:-45450}
+      - GATEWAY_SHIELD_PORT_HTTP=${GATEWAY_SHIELD_PORT_HTTP:-45455}
+      - GATEWAY_SHIELD_REDIS_HOST=${GATEWAY_SHIELD_REDIS_HOST:-gateway-shield-redis}
+      - GATEWAY_SHIELD_REDIS_PORT=${GATEWAY_SHIELD_REDIS_PORT:-6379}
+      - GATEWAY_SHIELD_REDIS_DATABASE=${GATEWAY_SHIELD_REDIS_DATABASE:-8}
+      - GATEWAY_SHIELD_REDIS_PASSWORD=${GATEWAY_SHIELD_REDIS_PASSWORD:-}
+      - GATEWAY_SHIELD_DATABASE_HOST=${GATEWAY_SHIELD_DATABASE_HOST:-gateway-shield-mysql}
+      - GATEWAY_SHIELD_DATABASE_PORT=${GATEWAY_SHIELD_DATABASE_PORT:-3306}
+      - GATEWAY_SHIELD_DATABASE=${GATEWAY_SHIELD_DATABASE:-gateway_shield}
+      - GATEWAY_SHIELD_DATABASE_USERNAME=${GATEWAY_SHIELD_DATABASE_USERNAME:-root}
+      - GATEWAY_SHIELD_DATABASE_PASSWORD=${GATEWAY_SHIELD_DATABASE_PASSWORD:-xuxiaowei.com.cn}
+      - GATEWAY_SHIELD_REDIS_ROUTE=${GATEWAY_SHIELD_REDIS_ROUTE:-false}
+      - GATEWAY_SHIELD_ROUTES_PATH=${GATEWAY_SHIELD_ROUTES_PATH:-}
+      - GATEWAY_SHIELD_ENABLE_ASN=${GATEWAY_SHIELD_ENABLE_ASN:-false}
+      - GATEWAY_SHIELD_ASN_DATABASE=${GATEWAY_SHIELD_ASN_DATABASE:-}
+      - GATEWAY_SHIELD_ENABLE_CITY=${GATEWAY_SHIELD_ENABLE_CITY:-false}
+      - GATEWAY_SHIELD_CITY_DATABASE=${GATEWAY_SHIELD_CITY_DATABASE:-}
+      - APP_ARGS=${GATEWAY_SHIELD_APP_ARGS:-}
+    depends_on:
+      gateway-shield-mysql:
+        condition: service_healthy
+      gateway-shield-redis:
+        condition: service_healthy
+  gateway-shield-mysql:
+    image: mysql:8.3.0
+    restart: always
+    container_name: gateway-shield-mysql
+    networks:
+      gateway-shield:
+    command:
+      - --log-bin=mysql-bin
+      - --binlog_expire_logs_seconds=1209600
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+    volumes:
+      - ${GATEWAY_HOME:-}/gateway-shield-mysql/data:/var/lib/mysql
+      - ${GATEWAY_HOME:-}/gateway-shield-mysql/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
+      interval: 5s
+      retries: 5
+      start_period: 30s
+    environment:
+      - MYSQL_ROOT_PASSWORD=${GATEWAY_SHIELD_DATABASE_PASSWORD:-xuxiaowei.com.cn}
+      - MYSQL_DATABASE=${GATEWAY_SHIELD_DATABASE:-gateway_shield}
+  gateway-shield-redis:
+    image: redis:7.2.4
+    restart: always
+    container_name: gateway-shield-redis
+    networks:
+      gateway-shield:
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+networks:
+  gateway-shield:
+```
+
+:::
+
+### MySQL 初始化表结构 {id=mysql-init}
+
+1. 将项目中 [sql](https://gitee.com/xuxiaowei-com-cn/gateway-shield/tree/main/sql)
+   文件夹中的 [gateway_shield.sql](https://gitee.com/xuxiaowei-com-cn/gateway-shield/blob/main/sql/gateway_shield.sql)
+   文件复制到 `${GATEWAY_HOME:-}/gateway-shield-mysql/init` 文件夹下
+    1. 其中 `GATEWAY_HOME` 是环境变量，可以不设置。如果不设置，
+       [gateway_shield.sql](https://gitee.com/xuxiaowei-com-cn/gateway-shield/blob/main/sql/gateway_shield.sql)
+       文件放在 `/gateway-shield-mysql/init` 文件夹下
+
+### 运行 docker compose {id=run-docker-compose}
+
+```shell
+# GATEWAY_SHIELD_REDIS_ROUTE：开启 Redis 路由
+# GATEWAY_SHIELD_ROUTES_PATH：配置 Redis 路由刷新的地址，本地址默认仅支持内网访问，内网范围：10.0.0.0/8、172.16.0.0/12、192.168.0.0/16
+export GATEWAY_SHIELD_REDIS_ROUTE=true GATEWAY_SHIELD_ROUTES_PATH=/route && docker compose up -d
+```
+
+## 增加代理 {id=proxy}
+
+### 在 redis 中增加数据
+
+- 默认使用的 Redis 数据库是 `8`
+- 根据自己的情况，设置 redis 中的路由
+    - 本文使用直接在服务器上操作添加 Redis 路由数据
+
+1. 进入到 redis 容器内
+    ```shell
+    docker exec -it gateway-shield-redis bash
+    ```
+    ```shell
+    [root@anolis ~]# docker exec -it gateway-shield-redis bash
+    root@57654b5bdf57:/data#
+    ```
+2. 进入 redis 命令行中
+    ```shell
+    redis-cli
+    ```
+    ```shell
+    [root@anolis ~]# docker exec -it gateway-shield-redis bash
+    root@57654b5bdf57:/data# redis-cli
+    127.0.0.1:6379>
+    ```
+3. 选择 8 号数据库
+    ```shell
+    select 8
+    ```
+    ```shell
+    [root@anolis ~]# docker exec -it gateway-shield-redis bash
+    root@57654b5bdf57:/data# redis-cli
+    127.0.0.1:6379> select 8
+    OK
+    127.0.0.1:6379[8]>
+    ```
+4. 添加数据
+    ```shell
+    set routedefinition_:www.baidu.com "{\"id\":\"www-baidu-com\",\"predicates\":[{\"name\":\"Host\",\"args\":{\"args1\":\"baidu.example.com:*\"}}],\"filters\":[],\"uri\":\"https://www.baidu.com\",\"metadata\":{},\"order\": 0}"
+    ```
+    ```shell
+    [root@anolis ~]# docker exec -it gateway-shield-redis bash
+    root@57654b5bdf57:/data# redis-cli
+    127.0.0.1:6379> select 8
+    OK
+    127.0.0.1:6379[8]> set routedefinition_:www.baidu.com "{\"id\":\"www-baidu-com\",\"predicates\":[{\"name\":\"Host\",\"args\":{\"args1\":\"baidu.example.com:*\"}}],\"filters\":[],\"uri\":\"https://www.baidu.com\",\"metadata\":{},\"order\": 0}"
+    OK
+    127.0.0.1:6379[8]>
+    ```
+    ```shell
+    [root@anolis ~]# docker exec -it gateway-shield-redis bash
+    root@57654b5bdf57:/data# redis-cli
+    127.0.0.1:6379> select 8
+    OK
+    127.0.0.1:6379[8]> set routedefinition_:www.baidu.com "{\"id\":\"www-baidu-com\",\"predicates\":[{\"name\":\"Host\",\"args\":{\"args1\":\"baidu.example.com:*\"}}],\"filters\":[],\"uri\":\"https://www.baidu.com\",\"metadata\":{},\"order\": 0}"
+    OK
+    127.0.0.1:6379[8]> get routedefinition_:www.baidu.com
+    "{\"id\":\"www-baidu-com\",\"predicates\":[{\"name\":\"Host\",\"args\":{\"args1\":\"baidu.example.com:*\"}}],\"filters\":[],\"uri\":\"https://www.baidu.com\",\"metadata\":{},\"order\": 0}"
+    127.0.0.1:6379[8]>
+    ```
+
+### 刷新路由
+
+- Redis 路由数据发生变更时，需要在 服务器 手动访问 http://127.0.0.1:45450/route
+- 本地址默认仅支持内网访问，内网范围：10.0.0.0/8、172.16.0.0/12、192.168.0.0/16
+
+```shell
+[root@anolis ~]# curl http://127.0.0.1:45450/route && echo
+{"msg":"刷新路由成功"}
+[root@anolis ~]# 
+```
+
+## 体验代理效果 {id=result}
+
+- 测试机器解析 域名 `baidu.example.com` 到 服务器
+- 服务器开放 `45450`、`45455`
+- 访问 http://baidu.example.com:45450 效果
+  ![baidu.example.com-1.png](static/baidu.example.com-1.png)
+- 访问 http://baidu.example.com:45455 效果
+  ![baidu.example.com-2.png](static/baidu.example.com-2.png)

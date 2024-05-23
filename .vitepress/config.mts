@@ -90,7 +90,7 @@ export default defineConfig({
         items: [
           { text: '什么是 Spring Cloud Gateway？', link: '/guide/what-is-spring-cloud-gateway' },
           { text: '项目分支介绍', link: '/guide/branch-introduction' },
-          { text: '快速开始（未完成）', link: '/guide/getting-started' },
+          { text: '快速开始', link: '/guide/getting-started' },
           // 由于此处链接使用了其他域名，所以上方不能使用基础地址
           { text: '联系我们', link: 'https://docs.xuxiaowei.cloud/spring-cloud-xuxiaowei/guide/contact-us.html' },
           { text: '赞助', link: 'https://docs.xuxiaowei.cloud/spring-cloud-xuxiaowei/guide/contributes.html' },
