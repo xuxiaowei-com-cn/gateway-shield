@@ -36,7 +36,7 @@ export default defineConfig({
     ]
   ],
   lastUpdated: true,
-  srcExclude: [ ],
+  srcExclude: [ 'README.md' ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
