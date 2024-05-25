@@ -3,9 +3,9 @@
 #  needs:
 #    - job: build
 #      artifacts: true
-#  image: docker:cli
+#  image: docker:26.1.3-cli
 #  services:
-#    - docker:dind
+#    - docker:26.1.3-dind
 #  before_script:
 #    - docker info
 #    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
