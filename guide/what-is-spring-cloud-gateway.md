@@ -2,7 +2,15 @@
 
 1. Spring Cloud Gateway 是由 Java 开发 Spring Cloud 微服中的一个重要成员，
    在微服务开发中不可或缺
-2. 可脱离微服务开发模式独立运行，本项目为单体项目
+2. 可脱离微服务开发模式独立运行，本项目为单体项目，以下域名均使用本项目进行代理
+    1. 网盾文档：https://gateway-shield.xuxiaowei.com.cn
+    2. 微服务文档：https://docs.xuxiaowei.cloud
+    3. 根据 IP 获取地理信息：https://ip.xuxiaowei.com.cn
+    4. 短网址：https://xxw.ac.cn
+    5. 自建 Jenkins：https://jenkins.xuxiaowei.com.cn
+    6. 自建 GitLab：https://gitlab.xuxiaowei.com.cn
+    7. markdown-it：https://markdown-it.xuxiaowei.com.cn
+    8. 工具箱：https://tools.xuxiaowei.com.cn
 3. 主要功能包含：大约 `43` 个过滤器
     1. 请求代理（反向代理）
     2. 请求参数过滤
