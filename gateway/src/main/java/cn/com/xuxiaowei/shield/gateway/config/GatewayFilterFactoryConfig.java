@@ -1,5 +1,6 @@
 package cn.com.xuxiaowei.shield.gateway.config;
 
+import cn.com.xuxiaowei.shield.gateway.filter.factory.AllowIPAccessGatewayFilterFactory;
 import cn.com.xuxiaowei.shield.gateway.filter.factory.JavaScriptAddResponseHeaderGatewayFilterFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.config.GatewayAutoConfiguration;
@@ -39,6 +40,12 @@ public class GatewayFilterFactoryConfig {
 	@ConditionalOnEnabledFilter
 	public JavaScriptAddResponseHeaderGatewayFilterFactory javaScriptAddResponseHeaderGatewayFilterFactory() {
 		return new JavaScriptAddResponseHeaderGatewayFilterFactory();
+	}
+
+	@Bean
+	@ConditionalOnEnabledFilter
+	public AllowIPAccessGatewayFilterFactory allowIpAccessGatewayFilterFactory() {
+		return new AllowIPAccessGatewayFilterFactory();
 	}
 
 }
