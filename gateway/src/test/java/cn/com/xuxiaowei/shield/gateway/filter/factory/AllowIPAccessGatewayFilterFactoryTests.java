@@ -32,13 +32,13 @@ import static org.junit.jupiter.api.Assertions.*;
         "spring.cloud.gateway.routes[0].uri=https://www.baidu.com",
 		"spring.cloud.gateway.routes[0].predicates[0]=Host=allow.localdev.me:*",
         "spring.cloud.gateway.routes[0].filters[0].name=AllowIPAccess",
-        "spring.cloud.gateway.routes[0].filters[0].args.cidrs[0]=127.0.0.1",
+        "spring.cloud.gateway.routes[0].filters[0].args.cidr=127.0.0.1",
 
         "spring.cloud.gateway.routes[1].id=reject-baidu",
         "spring.cloud.gateway.routes[1].uri=https://www.baidu.com",
 		"spring.cloud.gateway.routes[1].predicates[0]=Host=reject.localdev.me:*",
         "spring.cloud.gateway.routes[1].filters[0].name=AllowIPAccess",
-        "spring.cloud.gateway.routes[1].filters[0].args.cidrs[0]=100.100.100.100",
+        "spring.cloud.gateway.routes[1].filters[0].args.cidr=100.100.100.100",
 })
 // @formatter:on
 class AllowIPAccessGatewayFilterFactoryTests {

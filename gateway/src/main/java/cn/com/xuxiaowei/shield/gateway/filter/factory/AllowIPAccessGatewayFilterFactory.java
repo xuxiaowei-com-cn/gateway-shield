@@ -1,8 +1,8 @@
 package cn.com.xuxiaowei.shield.gateway.filter.factory;
 
 import cn.com.xuxiaowei.shield.gateway.utils.IpAddressMatcher;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import com.google.common.base.Splitter;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.config.GatewayAutoConfiguration;
@@ -31,7 +31,7 @@ public class AllowIPAccessGatewayFilterFactory
 
 	@Override
 	public List<String> shortcutFieldOrder() {
-		return List.of("cidrs");
+		return List.of("cidr");
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class AllowIPAccessGatewayFilterFactory
 		return (exchange, chain) -> {
 			String ipAddress = exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
 
-			if (isInternalIp(ipAddress, config.getCidrs())) {
+			if (isInternalIp(ipAddress, config.getCidr())) {
 				return chain.filter(exchange);
 			}
 			else {
@@ -50,8 +50,9 @@ public class AllowIPAccessGatewayFilterFactory
 		};
 	}
 
-	private boolean isInternalIp(String ipAddress, List<String> cidrs) {
-		return cidrs.stream().anyMatch(cidr -> new IpAddressMatcher(cidr).matches(ipAddress));
+	private boolean isInternalIp(String ipAddress, String cidr) {
+		List<String> cidrs = Splitter.on(",").trimResults().splitToList(cidr);
+		return cidrs.stream().anyMatch(predicate -> new IpAddressMatcher(predicate).matches(ipAddress));
 	}
 
 	/**
@@ -62,9 +63,11 @@ public class AllowIPAccessGatewayFilterFactory
 	@Validated
 	public static class Config {
 
-		@NotNull(message = "CIDR 不能为空")
-		@Size(min = 1, message = "CIDR 不能为空")
-		private List<String> cidrs;
+		/**
+		 * 支持使用 , 分隔
+		 */
+		@NotEmpty(message = "CIDR 不能为空")
+		private String cidr;
 
 	}
 
