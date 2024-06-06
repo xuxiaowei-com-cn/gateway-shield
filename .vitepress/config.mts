@@ -113,6 +113,7 @@ export default defineConfig({
         text: '功能',
         collapsed: false,
         items: [
+          { text: 'TLS/SSL/HTTPS 配置', link: '/feature/ssl' },
           {
             text: 'Boot',
             collapsed: true,
