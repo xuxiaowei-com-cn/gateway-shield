@@ -1,5 +1,7 @@
 stages:
   - build
+  - build:docker
+  - build:deploy
   - test
   - sync
 

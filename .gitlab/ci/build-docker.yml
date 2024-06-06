@@ -1,5 +1,5 @@
 #build:docker:
-#  stage: build
+#  stage: build:docker
 #  needs:
 #    - job: build
 #      artifacts: true
@@ -29,7 +29,7 @@
 #    - jihulab
 
 build:docker:
-  stage: build
+  stage: build:docker
   image:
     name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/xuxiaoweicomcn/kaniko-project-executor:v1.22.0-debug
     entrypoint: [ "" ]
