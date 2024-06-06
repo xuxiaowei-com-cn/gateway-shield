@@ -42,7 +42,8 @@ build:docker:
     - echo $VERSION
     - /kaniko/executor version
     - /kaniko/executor --help
-    - /kaniko/executor
+    - if [ "$PUSH_DOCKER_HUB" = "true" ]; then
+      /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --build-arg GROUP_ID=${GROUP_ID}
@@ -55,6 +56,20 @@ build:docker:
       --destination "${CI_REGISTRY_IMAGE}:${VERSION}"
       --destination "${CI_REGISTRY_IMAGE}:${VERSION}-${CI_PIPELINE_ID}"
       --destination "xuxiaoweicomcn/gateway-shield:${VERSION}"
-      --destination "xuxiaoweicomcn/gateway-shield:${VERSION}-${CI_PIPELINE_ID}"
+      --destination "xuxiaoweicomcn/gateway-shield:${VERSION}-${CI_PIPELINE_ID}";
+      else
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --build-arg GROUP_ID=${GROUP_ID}
+      --build-arg ARTIFACT_ID=${ARTIFACT_ID}
+      --build-arg VERSION=${VERSION}
+      --build-arg CI_PIPELINE_URL=${CI_PIPELINE_URL}
+      --build-arg CI_JOB_ID=${CI_JOB_ID}
+      --build-arg JAVA_OPTS="${CI_JAVA_OPTS}"
+      --build-arg APP_ARGS=${APP_ARGS}
+      --destination "${CI_REGISTRY_IMAGE}:${VERSION}"
+      --destination "${CI_REGISTRY_IMAGE}:${VERSION}-${CI_PIPELINE_ID}";
+      fi
   tags:
     - jihulab
