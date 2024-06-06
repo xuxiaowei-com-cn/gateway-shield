@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 自定义 {@link Bean} 实现 spring.cloud.gateway.routes 配置
@@ -49,7 +50,7 @@ public class PropertiesRouteDefinitionLocatorConfig {
 
 		PredicateDefinition predicateDefinition = new PredicateDefinition();
 		predicateDefinition.setName("Host");
-		HashMap<String, String> map = new HashMap<>();
+		Map<String, String> map = new HashMap<>();
 		map.put("a1", "test-config.localdev.me:*");
 		predicateDefinition.setArgs(map);
 

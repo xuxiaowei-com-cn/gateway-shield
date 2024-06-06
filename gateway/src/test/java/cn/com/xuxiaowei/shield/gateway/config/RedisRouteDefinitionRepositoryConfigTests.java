@@ -123,7 +123,7 @@ class RedisRouteDefinitionRepositoryConfigTests {
 
 		PredicateDefinition predicateDefinition = new PredicateDefinition();
 		predicateDefinition.setName("Host");
-		HashMap<String, String> args = new HashMap<>();
+		Map<String, String> args = new HashMap<>();
 		args.put("a1", prefix + ".localdev.me:*");
 		predicateDefinition.setArgs(args);
 
