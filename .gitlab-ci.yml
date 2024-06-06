@@ -45,7 +45,8 @@ docker:build:
     - echo $DOCKER_TAG
     - /kaniko/executor version
     - /kaniko/executor --help
-    - /kaniko/executor
+    - if [ "$PUSH_DOCKER_HUB" = "true" ]; then
+      /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --build-arg "CI_PIPELINE_URL=${CI_PIPELINE_URL}"
@@ -53,6 +54,14 @@ docker:build:
       --destination "${CI_REGISTRY_IMAGE}/docs:${DOCKER_TAG}-${CI_PIPELINE_ID}"
       --destination "xuxiaoweicomcn/gateway-shield-docs:${DOCKER_TAG}"
       --destination "xuxiaoweicomcn/gateway-shield-docs:${DOCKER_TAG}-${CI_PIPELINE_ID}"
+      else
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --build-arg "CI_PIPELINE_URL=${CI_PIPELINE_URL}"
+      --destination "${CI_REGISTRY_IMAGE}/docs:${DOCKER_TAG}"
+      --destination "${CI_REGISTRY_IMAGE}/docs:${DOCKER_TAG}-${CI_PIPELINE_ID}";
+      fi
   rules:
     - if: $CI_COMMIT_BRANCH == "docs" && $ENABLE_DOCS_DOCKER == "true"
 
