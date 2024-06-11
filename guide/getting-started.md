@@ -1,4 +1,4 @@
-# 快速开始{id=getting-started}
+# 快速开始 {id=getting-started}
 
 [[toc]]
 
@@ -354,3 +354,13 @@ export GATEWAY_SHIELD_REDIS_ROUTE=true GATEWAY_SHIELD_ROUTES_PATH=/route && dock
   ![baidu.example.com-1.png](static/baidu.example.com-1.png)
 - 访问 http://baidu.example.com:45455 效果
   ![baidu.example.com-2.png](static/baidu.example.com-2.png)
+
+## 使用 Redis Key 前缀匹配，是否影响效率？{id=efficiency}
+
+1. 正常开发时，不建议直接使用 Redis Key 前缀查询所有符合条件的匹配结果，效率可能不高
+2. 但是网关路由可以基于 Redis Key 前缀查询所有符合条件的匹配结果：加载时间不会影响网关路由的性能（非实时性）
+    1. 手动触发，不需要实时触发
+    2. 网关 Redis 路由仅在修改后，手动触发加载一次即可
+3. 总结
+    1. 没有最好的方案，只有最合适的方案
+        1. 不要认为某种方案存在一些缺陷就不能选择了，要根据实际情况分析，选择最合适的方案，权衡利弊
