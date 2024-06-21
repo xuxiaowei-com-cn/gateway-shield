@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // @formatter:off
 @TestPropertySource(properties = {
-		"spring.cloud.gateway.routes[0].id=hector",
-		"spring.cloud.gateway.routes[0].uri=https://hector.baidu.com",
-		"spring.cloud.gateway.routes[0].predicates[0]=Host=hector.localdev.me:*",
+		"spring.cloud.gateway.routes[0].id=demo",
+		"spring.cloud.gateway.routes[0].uri=http://localhost:45678",
+		"spring.cloud.gateway.routes[0].predicates[0]=Host=demo.localdev.me:*",
 		"spring.cloud.gateway.routes[0].filters[0].name=JavaScriptAddResponseHeader",
 		"spring.cloud.gateway.routes[0].filters[0].args.name=Cache-Control",
 		"spring.cloud.gateway.routes[0].filters[0].args.value=max-age=3600"
@@ -40,7 +40,7 @@ class JavaScriptAddResponseHeaderGatewayFilterFactoryTests {
 	@Test
 	void apply() {
 
-		String url = String.format("http://hector.localdev.me:%s/a.js", serverPort);
+		String url = String.format("http://demo.localdev.me:%s/a.js", serverPort);
 
 		RestTemplate restTemplate = new RestTemplate();
 
