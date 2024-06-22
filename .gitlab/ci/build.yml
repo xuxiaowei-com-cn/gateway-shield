@@ -52,5 +52,7 @@ build:
   cache:
     paths:
       - .m2/repository
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $BUILD == "true"
   tags:
     - jihulab

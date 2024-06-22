@@ -9,5 +9,7 @@ build:deploy:g150s:
     - docker info
     - docker compose up -d
   environment: production/g150s
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $BUILD_DEPLOY_G150S == "true"
   tags:
     - g150s-docker

@@ -9,5 +9,7 @@ build:deploy:911k:
     - docker info
     - docker compose up -d
   environment: production/911k
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $BUILD_DEPLOY_911K == "true"
   tags:
     - 911k-docker

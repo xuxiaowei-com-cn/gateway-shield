@@ -25,6 +25,8 @@
 #    - docker images
 #    - docker push "$CI_REGISTRY_IMAGE:$VERSION-$CI_PIPELINE_ID"
 #    - docker push "$CI_REGISTRY_IMAGE:$VERSION"
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $BUILD_DOCKER == "true"
 #  tags:
 #    - jihulab
 
@@ -71,5 +73,7 @@ build:docker:
       --destination "${CI_REGISTRY_IMAGE}:${VERSION}"
       --destination "${CI_REGISTRY_IMAGE}:${VERSION}-${CI_PIPELINE_ID}";
       fi
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $BUILD_DOCKER == "true"
   tags:
     - jihulab

@@ -1,0 +1,28 @@
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+
+gemnasium-dependency_scanning:
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $DEPENDENCY_SCANNING == "true"
+  tags:
+    - jihulab
+
+gemnasium-maven-dependency_scanning:
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $DEPENDENCY_SCANNING == "true"
+  tags:
+    - jihulab
+
+secret_detection:
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $SECRET_DETECTION == "true"
+  tags:
+    - jihulab
+
+semgrep-sast:
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $SEMGREP_SAST == "true"
+  tags:
+    - jihulab

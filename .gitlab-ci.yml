@@ -12,12 +12,10 @@ variables:
   CI_JAVA_OPTS: -Xms256m -Xmx512m
 
 include:
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
-  - template: Jobs/SAST.gitlab-ci.yml
   - local: .gitlab/ci/build.yml
   - local: .gitlab/ci/build-docker.yml
   - local: .gitlab/ci/build-deploy.yml
   - local: .gitlab/ci/build-deploy-g150s.yml
   - local: .gitlab/ci/build-deploy-911k.yml
+  - local: .gitlab/ci/ultimate.yml
   - local: .gitlab/ci/sync.yml

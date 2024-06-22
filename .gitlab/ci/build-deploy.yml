@@ -9,5 +9,7 @@ build:deploy:
     - docker info
     - docker compose up -d
   environment: production
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $BUILD_DEPLOY == "true"
   tags:
     - lighthouse-docker
