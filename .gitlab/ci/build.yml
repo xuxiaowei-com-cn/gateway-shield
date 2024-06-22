@@ -1,6 +1,6 @@
 build:
   stage: build
-  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/xuxiaoweicomcn/maven-mysql-client:3.6.3-openjdk-17
+  image: registry.cn-qingdao.aliyuncs.com/xuxiaoweicomcn/maven-mysql-client:3.6.3-openjdk-17
   variables:
     MAVEN_OPTS: >-
       -Dhttps.protocols=TLSv1.2
@@ -22,12 +22,12 @@ build:
     GATEWAY_SHIELD_REDIS_HOST: redis
     GATEWAY_SHIELD_REDIS_PASSWORD: ""
   services:
-    - name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/mysql:8.3.0
+    - name: registry.cn-qingdao.aliyuncs.com/xuxiaoweicomcn/mysql:8.3.0
       alias: $GATEWAY_SHIELD_DATABASE_HOST
       variables:
         MYSQL_ROOT_PASSWORD: $GATEWAY_SHIELD_DATABASE_PASSWORD
         MYSQL_DATABASE: $GATEWAY_SHIELD_DATABASE
-    - name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/redis:7.2.4
+    - name: registry.cn-qingdao.aliyuncs.com/xuxiaoweicomcn/redis:7.2.4
       alias: $GATEWAY_SHIELD_REDIS_HOST
   before_script:
     - if [ $CI_SERVER_HOST == 'gitlab.helm.xuxiaowei.cn' ]; then
