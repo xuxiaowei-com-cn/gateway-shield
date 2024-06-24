@@ -76,12 +76,18 @@ public class GatewayErrorWebExceptionHandler implements ErrorWebExceptionHandler
 
 		String name = ex.getClass().getName();
 		Object value = metadata.get(name);
+		log.info("{}: {}", name, value);
+
 		Object object = metadata.get(Exception.class.getName());
+		log.info("{}: {}", Exception.class.getName(), object);
 
 		String defaultRouteExceptionMessage = gatewayShieldProperties.getDefaultRouteExceptionMessage();
+		log.info("defaultRouteExceptionMessage: {}", defaultRouteExceptionMessage);
 
 		String message = value == null ? (object == null ? defaultRouteExceptionMessage : object.toString())
 				: value.toString();
+
+		log.info("message: {}", message);
 
 		DataBuffer dataBuffer = response.bufferFactory().wrap(message.getBytes());
 		return response.writeWith(Flux.just(dataBuffer));
