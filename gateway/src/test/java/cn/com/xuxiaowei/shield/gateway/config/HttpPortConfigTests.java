@@ -6,13 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * HTTP 端口 配置
@@ -35,18 +34,14 @@ class HttpPortConfigTests {
 
 		RestTemplate restTemplate = new RestTemplate();
 
-		Exception exception = null;
+		String string = restTemplate.getForObject(url, String.class);
 
-		try {
-			restTemplate.getForEntity(url, String.class);
-		}
-		catch (HttpClientErrorException.NotFound e) {
-			exception = e;
-			log.error("HTTP 端口 配置 测试", e);
-		}
+		assertNotNull(string);
 
-		assertNotNull(exception);
-		assertTrue(exception instanceof HttpClientErrorException.NotFound);
+		String nonExistRouteMessage = gatewayShieldProperties.getNonExistRouteMessage();
+		assertNotNull(nonExistRouteMessage);
+
+		assertEquals(nonExistRouteMessage, string);
 	}
 
 }

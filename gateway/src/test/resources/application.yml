@@ -8,6 +8,8 @@ gateway-shield:
   asn-database: ${GATEWAY_SHIELD_ASN_DATABASE:}
   enable-city: ${GATEWAY_SHIELD_ENABLE_CITY:false}
   city-database: ${GATEWAY_SHIELD_CITY_DATABASE:}
+  non-exist-route-message: ${GATEWAY_SHIELD_NON_EXIST_ROUTE_MESSAGE:访问的页面不存在}
+  default-route-exception-message: ${GATEWAY_SHIELD_DEFAULT_ROUTE_EXCEPTION_MESSAGE:代理异常}
 
 ---
 

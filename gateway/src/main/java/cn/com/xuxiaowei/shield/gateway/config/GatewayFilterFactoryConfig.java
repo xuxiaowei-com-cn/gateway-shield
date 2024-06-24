@@ -1,6 +1,7 @@
 package cn.com.xuxiaowei.shield.gateway.config;
 
 import cn.com.xuxiaowei.shield.gateway.filter.factory.AllowIPAccessGatewayFilterFactory;
+import cn.com.xuxiaowei.shield.gateway.filter.factory.ErrorWebExceptionGatewayFilterFactory;
 import cn.com.xuxiaowei.shield.gateway.filter.factory.JavaScriptAddResponseHeaderGatewayFilterFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.config.GatewayAutoConfiguration;
@@ -31,6 +32,7 @@ import org.springframework.context.annotation.Configuration;
  * @see PreserveHostHeaderGatewayFilterFactory
  * @see RequestRateLimiterGatewayFilterFactory
  * @see StripPrefixGatewayFilterFactory
+ * @see FallbackHeadersGatewayFilterFactory
  */
 @Slf4j
 @Configuration
@@ -46,6 +48,12 @@ public class GatewayFilterFactoryConfig {
 	@ConditionalOnEnabledFilter
 	public AllowIPAccessGatewayFilterFactory allowIpAccessGatewayFilterFactory() {
 		return new AllowIPAccessGatewayFilterFactory();
+	}
+
+	@Bean
+	@ConditionalOnEnabledFilter
+	public ErrorWebExceptionGatewayFilterFactory errorWebExceptionGatewayFilterFactory() {
+		return new ErrorWebExceptionGatewayFilterFactory();
 	}
 
 }

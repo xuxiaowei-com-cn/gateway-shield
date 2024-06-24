@@ -121,4 +121,20 @@ public class GatewayShieldProperties {
 	 */
 	private String cityDatabase;
 
+	/**
+	 * 不存在路由的消息
+	 */
+	private String nonExistRouteMessage;
+
+	/**
+	 * 默认路由异常
+	 * <p>
+	 * 优先级最低
+	 * <p>
+	 * // @formatter:off
+	 * metadata 数据中的异常 > metadata 数据中的 java.lang.Exception 异常 > defaultRouteExceptionMessage
+	 * // @formatter:on
+	 */
+	private String defaultRouteExceptionMessage;
+
 }

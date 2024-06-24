@@ -1,0 +1,23 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+
+        - id: baidu
+          uri: https://www.baidu.com
+          predicates:
+            # http://baidu.localdev.me:45450/sugrec
+            # * 代表所有端口
+            - Host=baidu.localdev.me:*
+
+        - id: demo
+          uri: http://127.0.0.1:45678
+          predicates:
+            # * 代表所有端口
+            - Host=demo.localdev.me:*
+          metadata:
+            "[io.netty.channel.AbstractChannel$AnnotatedConnectException]": "连接异常，请联系：xuxiaowei@xuxiaowei.com.cn"
+          filters:
+            - name: ErrorWebException
+              args:
+                message: <h1>代理的目标地址异常，请联系管理员</h1>

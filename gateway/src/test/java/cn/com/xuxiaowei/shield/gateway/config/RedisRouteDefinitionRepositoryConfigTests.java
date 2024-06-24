@@ -70,38 +70,45 @@ class RedisRouteDefinitionRepositoryConfigTests {
 		// 初始化 Redis 中的路由
 		init(prefix);
 
-		// 如果在创建 RedisRouteDefinitionRepository Bean 之前，Redis 已经有路由数据了，直接读取Redis数据，此处无需刷新。
-		// 如果在创建 RedisRouteDefinitionRepository Bean 之后，Redis 数据路由发生变更，需要刷新路由，才可以读取到最新的配置。
-		// 如果引入了 org.springframework.boot:spring-boot-starter-actuator 依赖，
-		// 可以调用 /actuator/gateway/refresh 接口刷新路由配置。
-		applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
+		try {
+			// 如果在创建 RedisRouteDefinitionRepository Bean 之前，Redis
+			// 已经有路由数据了，直接读取Redis数据，此处无需刷新。
+			// 如果在创建 RedisRouteDefinitionRepository Bean 之后，Redis
+			// 数据路由发生变更，需要刷新路由，才可以读取到最新的配置。
+			// 如果引入了 org.springframework.boot:spring-boot-starter-actuator 依赖，
+			// 可以调用 /actuator/gateway/refresh 接口刷新路由配置。
+			applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
 
-		// 增加订阅程序处理时间，防止自动化流水线偶尔出现异常
-		Thread.sleep(5_000);
+			// 增加订阅程序处理时间，防止自动化流水线偶尔出现异常
+			Thread.sleep(5_000);
 
-		String url = String.format("http://%s.localdev.me:%s/sugrec", prefix, serverPort);
+			String url = String.format("http://%s.localdev.me:%s/sugrec", prefix, serverPort);
 
-		RestTemplate restTemplate = new RestTemplate();
+			RestTemplate restTemplate = new RestTemplate();
 
-		ResponseEntity<String> entity = restTemplate.getForEntity(url, String.class);
+			ResponseEntity<String> entity = restTemplate.getForEntity(url, String.class);
 
-		assertEquals(entity.getStatusCode(), HttpStatus.OK);
+			assertEquals(entity.getStatusCode(), HttpStatus.OK);
 
-		String body = entity.getBody();
+			String body = entity.getBody();
 
-		assertNotNull(body);
+			assertNotNull(body);
 
-		log.info("{} -> https://www.baidu.com/sugrec: {}", url, body);
+			log.info("{} -> https://www.baidu.com/sugrec: {}", url, body);
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		Map<String, Object> map = objectMapper.readValue(body, new TypeReference<>() {
-		});
+			ObjectMapper objectMapper = new ObjectMapper();
+			Map<String, Object> map = objectMapper.readValue(body, new TypeReference<>() {
+			});
 
-		assertEquals(0, map.get("err_no"));
-		assertEquals("", map.get("errmsg"));
-		assertNotNull(map.get("queryid"));
+			assertEquals(0, map.get("err_no"));
+			assertEquals("", map.get("errmsg"));
+			assertNotNull(map.get("queryid"));
 
-		GatewayApplicationTests.queryForList(jdbcTemplate);
+			GatewayApplicationTests.queryForList(jdbcTemplate);
+		}
+		finally {
+			stringRedisTemplate.delete("routedefinition_:" + prefix);
+		}
 	}
 
 	/**
