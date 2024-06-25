@@ -122,10 +122,20 @@ export default defineConfig({
             ]
           },
           {
-            text: '默认过滤器',
+            text: '过滤器',
             collapsed: false,
             base: '/feature/filter/',
             items: [
+              {
+                text: '自定义过滤器',
+                collapsed: false,
+                base: '/feature/filter/custom/',
+                items: [
+                  { text: '允许 IP 访问', link: 'allow-ip-access' },
+                  { text: '代理目标服务异常时自定义响应', link: 'error-web-exception' },
+                  { text: 'JavaScript 添加响应头', link: 'java-script-add-response-header' },
+                ]
+              },
               { text: '添加请求参数', link: 'add-request-parameter' },
               { text: '删除请求参数', link: 'remove-request-parameter' },
               { text: '添加请求头', link: 'add-request-header' },
