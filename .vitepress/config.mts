@@ -63,6 +63,10 @@ export default defineConfig({
             link: 'https://gitee.com/xuxiaowei-com-cn/k8s.sh'
           },
           {
+            text: 'Kubernetes（k8s）文档国内镜像',
+            link: 'https://kubernetes.xuxiaowei.com.cn/zh-cn/'
+          },
+          {
             text: '根据 IP 获取地理信息',
             link: 'https://ip.xuxiaowei.com.cn'
           },
