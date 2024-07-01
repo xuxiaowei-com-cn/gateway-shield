@@ -75,6 +75,8 @@ docker:deploy:
   script:
     - docker info
     - docker compose up -d
+    - docker images | grep gateway-shield/docs
+    - docker images | grep gateway-shield/docs | awk '{print $3}' | xargs docker rmi || echo
   environment: production/docs
   rules:
     - if: $CI_COMMIT_BRANCH == "docs" && $ENABLE_DOCS_DOCKER_DEPLOY == "true"
