@@ -2,9 +2,9 @@ package cn.com.xuxiaowei.shield.gateway.filter;
 
 import cn.com.xuxiaowei.shield.gateway.properties.ReplaceAll;
 import cn.com.xuxiaowei.shield.gateway.utils.GzipUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 
 	public static final int ORDERED = Ordered.HIGHEST_PRECEDENCE + 60000;
 
-	private static final String REDIS_KEY = "replace-all:";
+	public static final String REDIS_KEY = "replace-all:";
 
 	private StringRedisTemplate stringRedisTemplate;
 
@@ -59,7 +59,6 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 		return this.order;
 	}
 
-	@SneakyThrows
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
@@ -74,59 +73,70 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 			String uriPath = uri.getPath();
 
 			AntPathMatcher antPathMatcher = new AntPathMatcher();
-			for (String key : keys) {
-				String string = stringRedisTemplate.opsForValue().get(key);
-				ReplaceAll replaceAll = objectMapper.readValue(string, ReplaceAll.class);
-				String host = replaceAll.getHost();
-				if (antPathMatcher.match(host, uriHost)) {
-					String regex = replaceAll.getRegex();
-					String replacement = replaceAll.getReplacement();
-					List<String> patterns = replaceAll.getPatterns();
-					for (String pattern : patterns) {
-						if (antPathMatcher.match(pattern, uriPath)) {
-							ServerHttpResponseDecorator decorator = new ServerHttpResponseDecorator(response) {
-								@NonNull
-								@Override
-								public Mono<Void> writeWith(@NonNull Publisher<? extends DataBuffer> body) {
+			ServerHttpResponseDecorator decorator = new ServerHttpResponseDecorator(response) {
+				@NonNull
+				@Override
+				public Mono<Void> writeWith(@NonNull Publisher<? extends DataBuffer> body) {
 
-									Flux<? extends DataBuffer> fluxDataBuffer = (Flux<? extends DataBuffer>) body;
+					Flux<? extends DataBuffer> fluxDataBuffer = (Flux<? extends DataBuffer>) body;
 
-									return response.writeWith(fluxDataBuffer.buffer().handle((dataBuffer, sink) -> {
+					return response.writeWith(fluxDataBuffer.buffer().handle((dataBuffer, sink) -> {
 
-										DataBuffer join = response.bufferFactory().join(dataBuffer);
+						DataBuffer join = response.bufferFactory().join(dataBuffer);
 
-										byte[] bytes = new byte[join.readableByteCount()];
-										join.read(bytes);
-										DataBufferUtils.release(join);
+						byte[] bytes = new byte[join.readableByteCount()];
+						join.read(bytes);
+						DataBufferUtils.release(join);
 
-										HttpHeaders headers = getDelegate().getHeaders();
-										String contentEncoding = headers.getFirst(HttpHeaders.CONTENT_ENCODING);
-										boolean gzip = contentEncoding != null && contentEncoding.contains("gzip");
+						HttpHeaders headers = getDelegate().getHeaders();
+						String contentEncoding = headers.getFirst(HttpHeaders.CONTENT_ENCODING);
+						boolean gzip = contentEncoding != null && contentEncoding.contains("gzip");
 
-										String responseBody;
-										try {
-											responseBody = decompressResponseBody(bytes, gzip);
-										}
-										catch (IOException e) {
-											sink.error(new RuntimeException(e));
-											return;
-										}
-										String str = responseBody.replaceAll(regex, replacement);
-										try {
-											sink.next(response.bufferFactory().wrap(compressResponseBody(str, gzip)));
-										}
-										catch (IOException e) {
-											sink.error(new RuntimeException(e));
-										}
-									}));
-								};
-							};
-
-							return chain.filter(exchange.mutate().response(decorator).build());
+						String responseBody;
+						try {
+							responseBody = decompressResponseBody(bytes, gzip);
 						}
-					}
-				}
-			}
+						catch (IOException e) {
+							sink.error(new RuntimeException(e));
+							return;
+						}
+
+						String result = responseBody;
+
+						for (String key : keys) {
+							String string = stringRedisTemplate.opsForValue().get(key);
+							ReplaceAll replaceAll;
+							try {
+								replaceAll = objectMapper.readValue(string, ReplaceAll.class);
+							}
+							catch (JsonProcessingException e) {
+								sink.error(new RuntimeException(e));
+								return;
+							}
+							String host = replaceAll.getHost();
+							if (antPathMatcher.match(host, uriHost)) {
+								String regex = replaceAll.getRegex();
+								String replacement = replaceAll.getReplacement();
+								List<String> patterns = replaceAll.getPatterns();
+								for (String pattern : patterns) {
+									if (antPathMatcher.match(pattern, uriPath)) {
+										result = responseBody.replaceAll(regex, replacement);
+									}
+								}
+							}
+						}
+
+						try {
+							sink.next(response.bufferFactory().wrap(compressResponseBody(result, gzip)));
+						}
+						catch (IOException e) {
+							sink.error(new RuntimeException(e));
+						}
+					}));
+				};
+			};
+
+			return chain.filter(exchange.mutate().response(decorator).build());
 		}
 
 		return chain.filter(exchange);
