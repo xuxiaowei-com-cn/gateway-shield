@@ -120,7 +120,7 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 								List<String> patterns = replaceAll.getPatterns();
 								for (String pattern : patterns) {
 									if (antPathMatcher.match(pattern, uriPath)) {
-										result = responseBody.replaceAll(regex, replacement);
+										result = result.replaceAll(regex, replacement);
 									}
 								}
 							}
