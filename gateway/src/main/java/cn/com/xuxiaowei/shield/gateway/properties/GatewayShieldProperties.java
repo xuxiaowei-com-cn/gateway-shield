@@ -137,4 +137,9 @@ public class GatewayShieldProperties {
 	 */
 	private String defaultRouteExceptionMessage;
 
+	/**
+	 * 是否启用 网关 异常 处理程序
+	 */
+	private Boolean enableGatewayErrorWebExceptionHandler;
+
 }

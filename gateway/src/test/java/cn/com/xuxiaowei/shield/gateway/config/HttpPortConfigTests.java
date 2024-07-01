@@ -20,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @since 0.0.1
  */
 @Slf4j
-@TestPropertySource(properties = { "gateway-shield.http-port=46655" })
+@TestPropertySource(properties = { "gateway-shield.http-port=46655",
+		"gateway-shield.enable-gateway-error-web-exception-handler=true" })
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class HttpPortConfigTests {
 

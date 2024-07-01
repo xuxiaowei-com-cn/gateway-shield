@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAutoConfiguration;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
@@ -12,7 +13,6 @@ import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -39,7 +39,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-@Profile("gateway-error-web-exception-handler")
+@ConditionalOnProperty("gateway-shield.enable-gateway-error-web-exception-handler")
 public class GatewayErrorWebExceptionHandler implements ErrorWebExceptionHandler, Ordered {
 
 	public static final int ORDERED = Ordered.HIGHEST_PRECEDENCE + 10000;
