@@ -8,6 +8,8 @@ build:deploy:g150s:
   script:
     - docker info
     - docker compose up -d
+    - docker images | grep gateway-shield
+    - docker images | grep gateway-shield | awk '{print $3}' | xargs docker rmi || echo
   environment: production/g150s
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $BUILD_DEPLOY_G150S == "true"
