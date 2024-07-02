@@ -41,7 +41,14 @@ public class RedisDataLogScheduled {
 		if (keys != null && !keys.isEmpty()) {
 			for (String key : keys) {
 				log.info("ReplaceAll key: {}", key);
-				String value = stringRedisTemplate.opsForValue().get(key);
+				String value;
+				try {
+					value = stringRedisTemplate.opsForValue().get(key);
+				}
+				catch (Exception e) {
+					log.error("ReplaceAll key error: {}", key, e);
+					continue;
+				}
 				log.info("ReplaceAll value: {}", value);
 			}
 		}
@@ -55,8 +62,14 @@ public class RedisDataLogScheduled {
 		log.info("Routes keys: {}", keys == null ? null : keys.size());
 		if (keys != null && !keys.isEmpty()) {
 			for (String key : keys) {
-				log.info("Routes key: {}", key);
-				String value = stringRedisTemplate.opsForValue().get(key);
+				String value;
+				try {
+					value = stringRedisTemplate.opsForValue().get(key);
+				}
+				catch (Exception e) {
+					log.error("Routes key error: {}", key, e);
+					continue;
+				}
 				log.info("Routes value: {}", value);
 			}
 		}
