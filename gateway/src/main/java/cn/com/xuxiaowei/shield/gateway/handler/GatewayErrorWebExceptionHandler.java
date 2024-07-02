@@ -39,7 +39,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty("gateway-shield.enable-gateway-error-web-exception-handler")
+@ConditionalOnProperty(value = "gateway-shield.enable-gateway-error-web-exception-handler", havingValue = "true")
 public class GatewayErrorWebExceptionHandler implements ErrorWebExceptionHandler, Ordered {
 
 	public static final int ORDERED = Ordered.HIGHEST_PRECEDENCE + 10000;
@@ -62,8 +62,12 @@ public class GatewayErrorWebExceptionHandler implements ErrorWebExceptionHandler
 	@Override
 	public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
 
+		log.error("网关异常处理程序：", ex);
+
 		ServerHttpResponse response = exchange.getResponse();
 		HttpHeaders headers = response.getHeaders();
+		log.info("原始 Content-Type: {}", headers.getContentType());
+
 		headers.setContentType(new MediaType("text", "html", StandardCharsets.UTF_8));
 
 		Route route = exchange.getAttribute(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR);
