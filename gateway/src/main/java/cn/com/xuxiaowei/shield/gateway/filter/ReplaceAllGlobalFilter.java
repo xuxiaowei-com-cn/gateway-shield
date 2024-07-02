@@ -3,6 +3,7 @@ package cn.com.xuxiaowei.shield.gateway.filter;
 import cn.com.xuxiaowei.shield.gateway.properties.ReplaceAll;
 import cn.com.xuxiaowei.shield.gateway.utils.GzipUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +16,14 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -45,6 +48,8 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 
 	public static final String REDIS_KEY = "replace-all:";
 
+	public static final String TYPE_REDIS_KEY = "replace-all-type";
+
 	private StringRedisTemplate stringRedisTemplate;
 
 	private int order = ORDERED;
@@ -62,84 +67,118 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
+		String value = stringRedisTemplate.opsForValue().get(TYPE_REDIS_KEY);
+		if (!StringUtils.hasText(value)) {
+			return chain.filter(exchange);
+		}
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		List<String> types;
+		try {
+			types = objectMapper.readValue(value, new TypeReference<>() {
+			});
+		}
+		catch (JsonProcessingException e) {
+			log.error("替换过滤器数据异常：", e);
+			return chain.filter(exchange);
+		}
+
+		if (types == null || types.isEmpty()) {
+			return chain.filter(exchange);
+		}
+
 		Set<String> keys = stringRedisTemplate.keys(REDIS_KEY + "*");
-		if (keys != null && !keys.isEmpty()) {
-			ServerHttpRequest request = exchange.getRequest();
-			ServerHttpResponse response = exchange.getResponse();
-			ObjectMapper objectMapper = new ObjectMapper();
+		if (keys == null || keys.isEmpty()) {
+			return chain.filter(exchange);
+		}
 
-			URI uri = request.getURI();
-			String uriHost = uri.getHost();
-			String uriPath = uri.getPath();
+		ServerHttpRequest request = exchange.getRequest();
+		ServerHttpResponse response = exchange.getResponse();
 
-			AntPathMatcher antPathMatcher = new AntPathMatcher();
-			ServerHttpResponseDecorator decorator = new ServerHttpResponseDecorator(response) {
-				@NonNull
-				@Override
-				public Mono<Void> writeWith(@NonNull Publisher<? extends DataBuffer> body) {
+		URI uri = request.getURI();
+		String uriHost = uri.getHost();
+		String uriPath = uri.getPath();
 
-					Flux<? extends DataBuffer> fluxDataBuffer = (Flux<? extends DataBuffer>) body;
+		AntPathMatcher antPathMatcher = new AntPathMatcher();
+		ServerHttpResponseDecorator decorator = new ServerHttpResponseDecorator(response) {
+			@NonNull
+			@Override
+			public Mono<Void> writeWith(@NonNull Publisher<? extends DataBuffer> body) {
 
-					return response.writeWith(fluxDataBuffer.buffer().handle((dataBuffer, sink) -> {
+				Flux<? extends DataBuffer> fluxDataBuffer = (Flux<? extends DataBuffer>) body;
 
-						DataBuffer join = response.bufferFactory().join(dataBuffer);
+				HttpHeaders headers = response.getHeaders();
+				MediaType contentType = headers.getContentType();
 
-						byte[] bytes = new byte[join.readableByteCount()];
-						join.read(bytes);
-						DataBufferUtils.release(join);
+				boolean compatibleWith = false;
+				for (String type : types) {
+					compatibleWith = MediaType.parseMediaType(type).isCompatibleWith(contentType);
+					if (compatibleWith) {
+						break;
+					}
+				}
 
-						HttpHeaders headers = getDelegate().getHeaders();
-						String contentEncoding = headers.getFirst(HttpHeaders.CONTENT_ENCODING);
-						boolean gzip = contentEncoding != null && contentEncoding.contains("gzip");
+				if (!compatibleWith) {
+					return super.writeWith(body);
+				}
 
-						String responseBody;
+				return response.writeWith(fluxDataBuffer.buffer().handle((dataBuffer, sink) -> {
+
+					DataBuffer join = response.bufferFactory().join(dataBuffer);
+
+					byte[] bytes = new byte[join.readableByteCount()];
+					join.read(bytes);
+					DataBufferUtils.release(join);
+
+					String contentEncoding = headers.getFirst(HttpHeaders.CONTENT_ENCODING);
+					boolean gzip = contentEncoding != null && contentEncoding.contains("gzip");
+
+					String responseBody;
+					try {
+						responseBody = decompressResponseBody(bytes, gzip);
+					}
+					catch (IOException e) {
+						sink.error(new RuntimeException(e));
+						return;
+					}
+
+					String result = responseBody;
+
+					for (String key : keys) {
+						String string = stringRedisTemplate.opsForValue().get(key);
+						ReplaceAll replaceAll;
 						try {
-							responseBody = decompressResponseBody(bytes, gzip);
+							replaceAll = objectMapper.readValue(string, ReplaceAll.class);
 						}
-						catch (IOException e) {
+						catch (JsonProcessingException e) {
 							sink.error(new RuntimeException(e));
 							return;
 						}
-
-						String result = responseBody;
-
-						for (String key : keys) {
-							String string = stringRedisTemplate.opsForValue().get(key);
-							ReplaceAll replaceAll;
-							try {
-								replaceAll = objectMapper.readValue(string, ReplaceAll.class);
-							}
-							catch (JsonProcessingException e) {
-								sink.error(new RuntimeException(e));
-								return;
-							}
-							String host = replaceAll.getHost();
-							if (antPathMatcher.match(host, uriHost)) {
-								String regex = replaceAll.getRegex();
-								String replacement = replaceAll.getReplacement();
-								List<String> patterns = replaceAll.getPatterns();
-								for (String pattern : patterns) {
-									if (antPathMatcher.match(pattern, uriPath)) {
-										result = result.replaceAll(regex, replacement);
-									}
+						String host = replaceAll.getHost();
+						if (antPathMatcher.match(host, uriHost)) {
+							String regex = replaceAll.getRegex();
+							String replacement = replaceAll.getReplacement();
+							List<String> patterns = replaceAll.getPatterns();
+							for (String pattern : patterns) {
+								if (antPathMatcher.match(pattern, uriPath)) {
+									result = result.replaceAll(regex, replacement);
 								}
 							}
 						}
+					}
 
-						try {
-							sink.next(response.bufferFactory().wrap(compressResponseBody(result, gzip)));
-						}
-						catch (IOException e) {
-							sink.error(new RuntimeException(e));
-						}
-					}));
-				};
+					try {
+						sink.next(response.bufferFactory().wrap(compressResponseBody(result, gzip)));
+					}
+					catch (IOException e) {
+						sink.error(new RuntimeException(e));
+					}
+				}));
 			};
+		};
 
-			return chain.filter(exchange.mutate().response(decorator).build());
-		}
-
-		return chain.filter(exchange);
+		return chain.filter(exchange.mutate().response(decorator).build());
 	}
 
 	private String decompressResponseBody(byte[] contentBytes, boolean gzip) throws IOException {
