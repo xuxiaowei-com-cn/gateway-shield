@@ -67,6 +67,10 @@ export default defineConfig({
             link: 'https://kubernetes.xuxiaowei.com.cn/zh-cn/'
           },
           {
+            text: 'Docker 文档国内镜像',
+            link: 'https://docker-docs.xuxiaowei.com.cn'
+          },
+          {
             text: '根据 IP 获取地理信息',
             link: 'https://ip.xuxiaowei.com.cn'
           },
