@@ -1,8 +1,6 @@
 package cn.com.xuxiaowei.shield.gateway.routes;
 
 import cn.com.xuxiaowei.shield.gateway.GatewayApplicationTests;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -15,8 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -28,9 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // @formatter:off
 @TestPropertySource(properties = {
-		"spring.cloud.gateway.routes[0].id=baidu",
-		"spring.cloud.gateway.routes[0].uri=https://www.baidu.com",
-		"spring.cloud.gateway.routes[0].predicates[0]=Host=baidu.localdev.me:*"
+		"spring.cloud.gateway.routes[0].id=demo",
+		"spring.cloud.gateway.routes[0].uri=http://localhost:45678",
+		"spring.cloud.gateway.routes[0].predicates[0]=Host=demo.localdev.me:*"
 })
 // @formatter:on
 class HostTests {
@@ -43,9 +39,9 @@ class HostTests {
 
 	@SneakyThrows
 	@Test
-	void sugrec() {
+	void header() {
 
-		String url = String.format("http://baidu.localdev.me:%s/sugrec", serverPort);
+		String url = String.format("http://demo.localdev.me:%s/header", serverPort);
 
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -56,16 +52,6 @@ class HostTests {
 		String body = entity.getBody();
 
 		assertNotNull(body);
-
-		log.info("{} -> https://www.baidu.com/sugrec: {}", url, body);
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		Map<String, Object> map = objectMapper.readValue(body, new TypeReference<>() {
-		});
-
-		assertEquals(0, map.get("err_no"));
-		assertEquals("", map.get("errmsg"));
-		assertNotNull(map.get("queryid"));
 
 		GatewayApplicationTests.queryForList(jdbcTemplate);
 	}

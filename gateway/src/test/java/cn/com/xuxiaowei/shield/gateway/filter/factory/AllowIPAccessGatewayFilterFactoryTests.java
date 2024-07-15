@@ -1,8 +1,5 @@
 package cn.com.xuxiaowei.shield.gateway.filter.factory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // @formatter:off
 @TestPropertySource(properties = {
-        "spring.cloud.gateway.routes[0].id=allow-baidu",
-        "spring.cloud.gateway.routes[0].uri=https://www.baidu.com",
+        "spring.cloud.gateway.routes[0].id=allow",
+        "spring.cloud.gateway.routes[0].uri=http://localhost:45678",
 		"spring.cloud.gateway.routes[0].predicates[0]=Host=allow.localdev.me:*",
         "spring.cloud.gateway.routes[0].filters[0].name=AllowIPAccess",
         "spring.cloud.gateway.routes[0].filters[0].args.cidr=127.0.0.1",
 
-        "spring.cloud.gateway.routes[1].id=reject-baidu",
+        "spring.cloud.gateway.routes[1].id=reject",
         "spring.cloud.gateway.routes[1].uri=https://www.baidu.com",
 		"spring.cloud.gateway.routes[1].predicates[0]=Host=reject.localdev.me:*",
         "spring.cloud.gateway.routes[1].filters[0].name=AllowIPAccess",
@@ -47,9 +42,9 @@ class AllowIPAccessGatewayFilterFactoryTests {
 	private int serverPort;
 
 	@Test
-	void allow() throws JsonProcessingException {
+	void allow() {
 
-		String url = String.format("http://allow.localdev.me:%s/sugrec", serverPort);
+		String url = String.format("http://allow.localdev.me:%s/header", serverPort);
 
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -60,23 +55,12 @@ class AllowIPAccessGatewayFilterFactoryTests {
 		String body = entity.getBody();
 
 		assertNotNull(body);
-
-		log.info("{} -> https://www.baidu.com/sugrec: {}", url, body);
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		Map<String, Object> map = objectMapper.readValue(body, new TypeReference<>() {
-		});
-
-		assertEquals(0, map.get("err_no"));
-		assertEquals("", map.get("errmsg"));
-		assertNotNull(map.get("queryid"));
-
 	}
 
 	@Test
 	void reject() {
 
-		String url = String.format("http://reject.localdev.me:%s/sugrec", serverPort);
+		String url = String.format("http://reject.localdev.me:%s/header", serverPort);
 
 		RestTemplate restTemplate = new RestTemplate();
 

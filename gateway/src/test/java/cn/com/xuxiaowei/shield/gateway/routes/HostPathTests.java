@@ -1,8 +1,6 @@
 package cn.com.xuxiaowei.shield.gateway.routes;
 
 import cn.com.xuxiaowei.shield.gateway.GatewayApplicationTests;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -15,8 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -28,14 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // @formatter:off
 @TestPropertySource(properties = {
-        "spring.cloud.gateway.routes[0].id=test-baidu-sugrec",
-        "spring.cloud.gateway.routes[0].uri=https://www.baidu.com",
-        "spring.cloud.gateway.routes[0].predicates[0]=Path=/sugrec",
-        "spring.cloud.gateway.routes[0].predicates[1]=Host=test-baidu.localdev.me:*",
-        "spring.cloud.gateway.routes[1].id=test-baidu-a.js",
-        "spring.cloud.gateway.routes[1].uri=https://hector.baidu.com",
-        "spring.cloud.gateway.routes[1].predicates[0]=Path=/a.js",
-        "spring.cloud.gateway.routes[1].predicates[1]=Host=test-baidu.localdev.me:*"
+        "spring.cloud.gateway.routes[0].id=demo",
+		"spring.cloud.gateway.routes[0].uri=http://localhost:45678",
+        "spring.cloud.gateway.routes[0].predicates[0]=Path=/header",
+		"spring.cloud.gateway.routes[0].predicates[1]=Host=demo.localdev.me:*",
 })
 // @formatter:on
 class HostPathTests {
@@ -48,9 +40,9 @@ class HostPathTests {
 
 	@SneakyThrows
 	@Test
-	void testBaidu() {
+	void header() {
 
-		String url = String.format("http://test-baidu.localdev.me:%s/sugrec", serverPort);
+		String url = String.format("http://demo.localdev.me:%s/header", serverPort);
 
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -61,22 +53,6 @@ class HostPathTests {
 		String body = entity.getBody();
 
 		assertNotNull(body);
-
-		log.info("{} -> https://www.baidu.com/sugrec: {}", url, body);
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		Map<String, Object> map = objectMapper.readValue(body, new TypeReference<>() {
-		});
-
-		assertEquals(0, map.get("err_no"));
-		assertEquals("", map.get("errmsg"));
-		assertNotNull(map.get("queryid"));
-
-		String jsUrl = String.format("http://test-baidu.localdev.me:%s/a.js", serverPort);
-
-		String js = restTemplate.getForObject(jsUrl, String.class);
-
-		assertNotNull(js);
 
 		GatewayApplicationTests.queryForList(jdbcTemplate);
 

@@ -1,7 +1,6 @@
 package cn.com.xuxiaowei.shield.gateway.config;
 
 import cn.com.xuxiaowei.shield.gateway.GatewayApplicationTests;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +63,7 @@ class RedisRouteDefinitionRepositoryConfigTests {
 
 	@SneakyThrows
 	@Test
-	void sugrec() {
+	void header() {
 		String prefix = RandomStringUtils.randomAlphabetic(4).toLowerCase();
 
 		// 初始化 Redis 中的路由
@@ -82,7 +81,7 @@ class RedisRouteDefinitionRepositoryConfigTests {
 			// 增加订阅程序处理时间，防止自动化流水线偶尔出现异常
 			Thread.sleep(5_000);
 
-			String url = String.format("http://%s.localdev.me:%s/sugrec", prefix, serverPort);
+			String url = String.format("http://%s.localdev.me:%s/header", prefix, serverPort);
 
 			RestTemplate restTemplate = new RestTemplate();
 
@@ -93,16 +92,6 @@ class RedisRouteDefinitionRepositoryConfigTests {
 			String body = entity.getBody();
 
 			assertNotNull(body);
-
-			log.info("{} -> https://www.baidu.com/sugrec: {}", url, body);
-
-			ObjectMapper objectMapper = new ObjectMapper();
-			Map<String, Object> map = objectMapper.readValue(body, new TypeReference<>() {
-			});
-
-			assertEquals(0, map.get("err_no"));
-			assertEquals("", map.get("errmsg"));
-			assertNotNull(map.get("queryid"));
 
 			GatewayApplicationTests.queryForList(jdbcTemplate);
 		}
@@ -126,7 +115,7 @@ class RedisRouteDefinitionRepositoryConfigTests {
 
 		RouteDefinition routeDefinition = new RouteDefinition();
 		routeDefinition.setId(prefix);
-		routeDefinition.setUri(new URI("https://www.baidu.com"));
+		routeDefinition.setUri(new URI("http://localhost:45678"));
 
 		PredicateDefinition predicateDefinition = new PredicateDefinition();
 		predicateDefinition.setName("Host");
