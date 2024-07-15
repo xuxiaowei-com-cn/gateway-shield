@@ -50,8 +50,8 @@ class ReplaceAllGlobalFilterTests {
 	@Test
 	void filter() throws JsonProcessingException {
 
-		String regex = "56";
-		String replacement = "00";
+		String regex = "23456789";
+		String replacement = "00000000";
 
 		ReplaceAll replaceAll = new ReplaceAll();
 		replaceAll.setHost(HOST);
