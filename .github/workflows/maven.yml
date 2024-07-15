@@ -90,7 +90,7 @@ jobs:
 
       - name: Run demo
         run: |
-          nohup java -jar demo/target/demo-0.0.1-SNAPSHOT.jar > nohup-demo.out 2>&1 &
+          nohup java -jar demo/target/demo-0.0.2-SNAPSHOT.jar > nohup-demo.out 2>&1 &
           sleep 20s
           cat nohup-demo.out
           curl "http://127.0.0.1:45678" && echo

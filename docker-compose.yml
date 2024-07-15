@@ -1,6 +1,6 @@
 services:
   gateway-shield:
-    image: ${CI_REGISTRY_IMAGE}:${VERSION}-${CI_PIPELINE_ID}
+    image: registry.cn-qingdao.aliyuncs.com/xuxiaoweicomcn/gateway-shield:${VERSION}-${CI_PIPELINE_ID}
     restart: always
     ports:
       - ${GATEWAY_SHIELD_PORT:-45450}:${GATEWAY_SHIELD_PORT:-45450}

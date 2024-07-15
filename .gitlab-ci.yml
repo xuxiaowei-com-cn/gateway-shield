@@ -8,7 +8,8 @@ stages:
 variables:
   GROUP_ID: cn.com.xuxiaowei.shield
   ARTIFACT_ID: gateway
-  VERSION: 0.0.1-SNAPSHOT
+  VERSION: 0.0.2-SNAPSHOT
+  SETTINGS_XML_PATH: settings.xml
   CI_JAVA_OPTS: -Xms256m -Xmx512m
 
 include:

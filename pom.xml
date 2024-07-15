@@ -10,7 +10,7 @@
     </parent>
     <groupId>cn.com.xuxiaowei.shield</groupId>
     <artifactId>gateway-shield</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>gateway-shield</name>
     <description>网盾</description>

@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>cn.com.xuxiaowei.shield</groupId>
 		<artifactId>gateway-shield</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>cn.com.xuxiaowei.shield</groupId>
 	<artifactId>demo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>demo</name>
 	<description>示例</description>
 	<properties>

@@ -37,14 +37,15 @@ build:
     - mysql -u ${GATEWAY_SHIELD_DATABASE_USERNAME} -p${GATEWAY_SHIELD_DATABASE_PASSWORD} --host=${GATEWAY_SHIELD_DATABASE_HOST} ${GATEWAY_SHIELD_DATABASE} < sql/init_config.sql
     - mysql -u ${GATEWAY_SHIELD_DATABASE_USERNAME} -p${GATEWAY_SHIELD_DATABASE_PASSWORD} --host=${GATEWAY_SHIELD_DATABASE_HOST} ${GATEWAY_SHIELD_DATABASE} < sql/gateway_shield.sql
   script:
+    - echo $SETTINGS_XML_PATH
     - free -h || cat /proc/meminfo
     - mvn -v
-    - mvn clean package -DskipTests=true -s settings.xml
+    - mvn clean package -DskipTests=true -s $SETTINGS_XML_PATH
     - free -h || cat /proc/meminfo
-    - nohup java -Xms128m -Xmx256m -jar demo/target/demo-0.0.1-SNAPSHOT.jar > nohup-demo.out 2>&1 &
+    - nohup java -Xms128m -Xmx256m -jar demo/target/demo-0.0.2-SNAPSHOT.jar > nohup-demo.out 2>&1 &
     - sleep 20s
     - cat nohup-demo.out
-    - mvn test -DskipTests=false -s settings.xml
+    - mvn test -DskipTests=false -s $SETTINGS_XML_PATH
   artifacts:
     name: build
     paths:
@@ -54,5 +55,3 @@ build:
       - .m2/repository
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $BUILD == "true"
-  tags:
-    - jihulab
