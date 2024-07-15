@@ -1,6 +1,6 @@
 {
   "name": "gateway-shield-docs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "pre:npm": "npm install --registry https://registry.npmmirror.com || npm install --registry https://registry.npmjs.org",
     "docs:dev": "vitepress dev",

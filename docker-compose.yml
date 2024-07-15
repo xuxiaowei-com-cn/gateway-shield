@@ -1,6 +1,6 @@
 services:
   gateway-shield-docs:
-    image: ${CI_REGISTRY_IMAGE}/docs:${DOCKER_TAG}-${CI_PIPELINE_ID}
+    image: registry.cn-qingdao.aliyuncs.com/xuxiaoweicomcn/gateway-shield-docs:${DOCKER_TAG}-${CI_PIPELINE_ID}
     restart: always
     ports:
       - ${GATEWAY_SHIELD_DOCS_PORT:-45850}:80
