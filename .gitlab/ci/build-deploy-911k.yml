@@ -1,7 +1,7 @@
-build:deploy:911k:
-  stage: build:deploy
+build-deploy-911k:
+  stage: build-deploy
   needs:
-    - job: build:docker
+    - job: build-docker
   image: registry.cn-qingdao.aliyuncs.com/xuxiaoweicomcn/docker:26.1.3-cli
   variables:
     DOCKER_HOST: $DEPLOY_DOCKER_HOST

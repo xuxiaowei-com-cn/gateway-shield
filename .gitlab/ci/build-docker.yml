@@ -1,5 +1,5 @@
-#build:docker:
-#  stage: build:docker
+#build-docker:
+#  stage: build-docker
 #  needs:
 #    - job: build
 #      artifacts: true
@@ -28,8 +28,8 @@
 #  rules:
 #    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $BUILD_DOCKER == "true"
 
-build:docker:
-  stage: build:docker
+build-docker:
+  stage: build-docker
   image:
     name: registry.cn-qingdao.aliyuncs.com/xuxiaoweicomcn/kaniko-project-executor:v1.23.1-debug
     entrypoint: [ "" ]
