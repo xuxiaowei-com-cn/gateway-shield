@@ -46,6 +46,8 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 
 	public static final int ORDERED = Ordered.HIGHEST_PRECEDENCE + 60000;
 
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
 	public static final String REDIS_KEY = "replace-all:";
 
 	public static final String TYPE_REDIS_KEY = "replace-all-type";
@@ -72,11 +74,9 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 			return chain.filter(exchange);
 		}
 
-		ObjectMapper objectMapper = new ObjectMapper();
-
 		List<String> types;
 		try {
-			types = objectMapper.readValue(value, new TypeReference<>() {
+			types = OBJECT_MAPPER.readValue(value, new TypeReference<>() {
 			});
 		}
 		catch (JsonProcessingException e) {
@@ -149,7 +149,7 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 						String string = stringRedisTemplate.opsForValue().get(key);
 						ReplaceAll replaceAll;
 						try {
-							replaceAll = objectMapper.readValue(string, ReplaceAll.class);
+							replaceAll = OBJECT_MAPPER.readValue(string, ReplaceAll.class);
 						}
 						catch (JsonProcessingException e) {
 							sink.error(new RuntimeException(e));

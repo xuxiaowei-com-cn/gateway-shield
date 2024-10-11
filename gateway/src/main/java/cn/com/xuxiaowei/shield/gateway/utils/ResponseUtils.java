@@ -17,6 +17,12 @@ import reactor.core.publisher.Mono;
  */
 public class ResponseUtils {
 
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+	static {
+		OBJECT_MAPPER.registerModule(new JavaTimeModule());
+	}
+
 	/**
 	 * 使用 Mono 响应数据
 	 * @param response 响应
@@ -33,10 +39,7 @@ public class ResponseUtils {
 		// 不可使用 APPLICATION_JSON（部分浏览器会乱码）
 		response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.registerModule(new JavaTimeModule());
-
-		byte[] bytes = objectMapper.writeValueAsBytes(object);
+		byte[] bytes = OBJECT_MAPPER.writeValueAsBytes(object);
 
 		DataBuffer dataBuffer = response.bufferFactory().wrap(bytes);
 		return response.writeWith(Mono.just(dataBuffer));
