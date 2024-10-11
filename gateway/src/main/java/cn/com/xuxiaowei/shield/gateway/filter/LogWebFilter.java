@@ -22,6 +22,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,6 +31,7 @@ import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -43,10 +45,7 @@ import java.net.URI;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 日志 过滤器
@@ -64,8 +63,8 @@ public class LogWebFilter implements WebFilter, Ordered {
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	private static final String SQL = "INSERT INTO `gateway_shield_log` "
-			+ " (`gateway_shield_log_id`, `request_id`, `scheme`, `host_name`, `host_address`, `network`, `system_organization`, `system_number`, `continent_code`, `continent_geo_name_id`, `continent_name`, `country_iso_code`, `country_geo_name_id`, `country_name`, `is_in_european_union`, `subdivision_iso_codes`, `subdivision_geo_name_ids`, `subdivision_names`, `city_geo_name_id`, `city_name`, `host`, `port`, `path`, `query`, `raw_query`, `type`, `user_agent`, `referer`, `headers_json`, `year`, `month`, `day`, `hour`, `minute`, `second`) "
-			+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			+ " (`gateway_shield_log_id`, `request_id`, `scheme`, `host_name`, `host_address`, `network`, `system_organization`, `system_number`, `continent_code`, `continent_geo_name_id`, `continent_name`, `country_iso_code`, `country_geo_name_id`, `country_name`, `is_in_european_union`, `subdivision_iso_codes`, `subdivision_geo_name_ids`, `subdivision_names`, `city_geo_name_id`, `city_name`, `host`, `port`, `path`, `query`, `raw_query`, `type`, `user_agent`, `referer`, `headers_json`, `multipart_data_json`, `year`, `month`, `day`, `hour`, `minute`, `second`) "
+			+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	private static final List<String> INTRANETS = Arrays.asList(
 			// 10.0.0.0 到 10.255.255.255
@@ -126,15 +125,49 @@ public class LogWebFilter implements WebFilter, Ordered {
 				LogConstants.G_HOST_ADDRESS, hostAddress);
 		// @formatter:on
 
-		save(exchange);
-
 		// String redisVersion = RedisUtils.redisVersion(stringRedisTemplate);
 		// log.info("redisVersion: {}", redisVersion);
 
-		return chain.filter(exchange);
+		return exchange.getMultipartData().flatMap(multipartData -> {
+
+			Map<String, Object> multipartDataMap = new HashMap<>();
+
+			for (Map.Entry<String, List<Part>> entry : multipartData.entrySet()) {
+				String key = entry.getKey();
+				List<Part> values = entry.getValue();
+				for (Part value : values) {
+					Map<String, Object> valuesMap = new HashMap<>();
+					HttpHeaders valueHeaders = value.headers();
+					if (value instanceof MultipartFile multipartFile) {
+						long size = multipartFile.getSize();
+						String name = multipartFile.getName();
+						String contentType = multipartFile.getContentType();
+						String originalFilename = multipartFile.getOriginalFilename();
+
+						Map<String, Object> multipartFileMap = new LinkedHashMap<>();
+						multipartFileMap.put("size", size);
+						multipartFileMap.put("name", name);
+						multipartFileMap.put("contentType", contentType);
+						multipartFileMap.put("originalFilename", originalFilename);
+						valuesMap.put("multipartFileMap", multipartFileMap);
+					}
+					valuesMap.put("headers", valueHeaders);
+					multipartDataMap.put(key, valuesMap);
+				}
+			}
+
+			try {
+				save(exchange, multipartDataMap);
+			}
+			catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
+
+			return chain.filter(exchange);
+		});
 	}
 
-	private void save(ServerWebExchange exchange) throws JsonProcessingException {
+	private void save(ServerWebExchange exchange, Map<String, Object> multipartDataMap) throws JsonProcessingException {
 
 		ServerHttpRequest request = exchange.getRequest();
 
@@ -164,6 +197,7 @@ public class LogWebFilter implements WebFilter, Ordered {
 		String host = headers.getFirst(HttpHeaders.HOST);
 
 		String headersJson = OBJECT_MAPPER.writeValueAsString(headers);
+		String multipartDataJson = OBJECT_MAPPER.writeValueAsString(multipartDataMap);
 
 		InetSocketAddress remoteAddress = request.getRemoteAddress();
 		InetAddress address = remoteAddress.getAddress();
@@ -386,6 +420,7 @@ public class LogWebFilter implements WebFilter, Ordered {
 				new SqlParameterValue(Types.VARCHAR, userAgent),
 				new SqlParameterValue(Types.VARCHAR, referer),
 				new SqlParameterValue(Types.VARCHAR, headersJson),
+				new SqlParameterValue(Types.VARCHAR, multipartDataJson),
 				new SqlParameterValue(Types.INTEGER, year),
 				new SqlParameterValue(Types.INTEGER, monthValue),
 				new SqlParameterValue(Types.INTEGER, dayOfMonth),
