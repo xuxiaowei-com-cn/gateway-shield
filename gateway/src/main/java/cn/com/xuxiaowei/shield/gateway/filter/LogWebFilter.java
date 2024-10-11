@@ -22,7 +22,6 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,7 +30,6 @@ import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -128,43 +126,43 @@ public class LogWebFilter implements WebFilter, Ordered {
 		// String redisVersion = RedisUtils.redisVersion(stringRedisTemplate);
 		// log.info("redisVersion: {}", redisVersion);
 
-		return exchange.getMultipartData().flatMap(multipartData -> {
-
-			Map<String, Object> multipartDataMap = new HashMap<>();
-
-			for (Map.Entry<String, List<Part>> entry : multipartData.entrySet()) {
-				String key = entry.getKey();
-				List<Part> values = entry.getValue();
-				for (Part value : values) {
-					Map<String, Object> valuesMap = new HashMap<>();
-					HttpHeaders valueHeaders = value.headers();
-					if (value instanceof MultipartFile multipartFile) {
-						long size = multipartFile.getSize();
-						String name = multipartFile.getName();
-						String contentType = multipartFile.getContentType();
-						String originalFilename = multipartFile.getOriginalFilename();
-
-						Map<String, Object> multipartFileMap = new LinkedHashMap<>();
-						multipartFileMap.put("size", size);
-						multipartFileMap.put("name", name);
-						multipartFileMap.put("contentType", contentType);
-						multipartFileMap.put("originalFilename", originalFilename);
-						valuesMap.put("multipartFileMap", multipartFileMap);
-					}
-					valuesMap.put("headers", valueHeaders);
-					multipartDataMap.put(key, valuesMap);
-				}
-			}
-
-			try {
-				save(exchange, multipartDataMap);
-			}
-			catch (JsonProcessingException e) {
-				throw new RuntimeException(e);
-			}
-
-			return chain.filter(exchange);
-		});
+		// return exchange.getMultipartData().flatMap(multipartData -> {
+		//
+		Map<String, Object> multipartDataMap = new HashMap<>();
+		//
+		// for (Map.Entry<String, List<Part>> entry : multipartData.entrySet()) {
+		// String key = entry.getKey();
+		// List<Part> values = entry.getValue();
+		// for (Part value : values) {
+		// Map<String, Object> valuesMap = new HashMap<>();
+		// HttpHeaders valueHeaders = value.headers();
+		// if (value instanceof MultipartFile multipartFile) {
+		// long size = multipartFile.getSize();
+		// String name = multipartFile.getName();
+		// String contentType = multipartFile.getContentType();
+		// String originalFilename = multipartFile.getOriginalFilename();
+		//
+		// Map<String, Object> multipartFileMap = new LinkedHashMap<>();
+		// multipartFileMap.put("size", size);
+		// multipartFileMap.put("name", name);
+		// multipartFileMap.put("contentType", contentType);
+		// multipartFileMap.put("originalFilename", originalFilename);
+		// valuesMap.put("multipartFileMap", multipartFileMap);
+		// }
+		// valuesMap.put("headers", valueHeaders);
+		// multipartDataMap.put(key, valuesMap);
+		// }
+		// }
+		//
+		// try {
+		save(exchange, multipartDataMap);
+		// }
+		// catch (JsonProcessingException e) {
+		// throw new RuntimeException(e);
+		// }
+		//
+		return chain.filter(exchange);
+		// });
 	}
 
 	private void save(ServerWebExchange exchange, Map<String, Object> multipartDataMap) throws JsonProcessingException {
