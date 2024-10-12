@@ -10,6 +10,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
@@ -24,10 +25,12 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.sql.Types;
 import java.util.List;
+
+import static cn.com.xuxiaowei.shield.gateway.utils.GzipUtils.decompressResponseBody;
 
 /**
  * 保存 响应体
@@ -95,6 +98,8 @@ public class SaveResponseBodyGlobalFilter implements GlobalFilter, Ordered {
 
 						Flux<? extends DataBuffer> fluxDataBuffer = (Flux<? extends DataBuffer>) body;
 
+						HttpHeaders headers = response.getHeaders();
+
 						return response.writeWith(fluxDataBuffer.buffer().handle((dataBuffer, sink) -> {
 
 							DataBuffer join = response.bufferFactory().join(dataBuffer);
@@ -103,9 +108,23 @@ public class SaveResponseBodyGlobalFilter implements GlobalFilter, Ordered {
 							join.read(bytes);
 							DataBufferUtils.release(join);
 
+							String contentEncoding = headers.getFirst(HttpHeaders.CONTENT_ENCODING);
+							boolean gzip = contentEncoding != null && contentEncoding.contains("gzip");
+
+							String responseBody;
+							try {
+								responseBody = decompressResponseBody(bytes, gzip);
+							}
+							catch (IOException e) {
+								sink.error(new RuntimeException(e));
+								return;
+							}
+
+							log.info("responseBody: {}", responseBody);
+
 							// @formatter:off
 							SqlParameterValue[] parameters = new SqlParameterValue[] {
-									new SqlParameterValue(Types.VARCHAR, new String(bytes, StandardCharsets.UTF_8)),
+									new SqlParameterValue(Types.VARCHAR, responseBody),
 									new SqlParameterValue(Types.VARCHAR, logId),
 							};
 							// @formatter:on

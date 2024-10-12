@@ -1,7 +1,6 @@
 package cn.com.xuxiaowei.shield.gateway.filter;
 
 import cn.com.xuxiaowei.shield.gateway.properties.ReplaceAll;
-import cn.com.xuxiaowei.shield.gateway.utils.GzipUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +31,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
+
+import static cn.com.xuxiaowei.shield.gateway.utils.GzipUtils.compressResponseBody;
+import static cn.com.xuxiaowei.shield.gateway.utils.GzipUtils.decompressResponseBody;
 
 /**
  * 替换过滤器
@@ -180,20 +182,6 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 		};
 
 		return chain.filter(exchange.mutate().response(decorator).build());
-	}
-
-	private String decompressResponseBody(byte[] contentBytes, boolean gzip) throws IOException {
-		if (gzip) {
-			contentBytes = GzipUtils.decompress(contentBytes);
-		}
-		return new String(contentBytes);
-	}
-
-	private byte[] compressResponseBody(String content, boolean gzip) throws IOException {
-		if (gzip) {
-			return GzipUtils.compress(content);
-		}
-		return content.getBytes();
 	}
 
 }

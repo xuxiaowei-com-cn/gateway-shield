@@ -47,4 +47,18 @@ public class GzipUtils {
 		return bos.toByteArray();
 	}
 
+	public static String decompressResponseBody(byte[] contentBytes, boolean gzip) throws IOException {
+		if (gzip) {
+			contentBytes = GzipUtils.decompress(contentBytes);
+		}
+		return new String(contentBytes);
+	}
+
+	public static byte[] compressResponseBody(String content, boolean gzip) throws IOException {
+		if (gzip) {
+			return GzipUtils.compress(content);
+		}
+		return content.getBytes();
+	}
+
 }
