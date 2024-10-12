@@ -25,6 +25,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.sql.Types;
 import java.util.List;
 
@@ -104,7 +105,7 @@ public class SaveResponseBodyGlobalFilter implements GlobalFilter, Ordered {
 
 							// @formatter:off
 							SqlParameterValue[] parameters = new SqlParameterValue[] {
-									new SqlParameterValue(Types.VARCHAR, new String(bytes)),
+									new SqlParameterValue(Types.VARCHAR, new String(bytes, StandardCharsets.UTF_8)),
 									new SqlParameterValue(Types.VARCHAR, logId),
 							};
 							// @formatter:on
