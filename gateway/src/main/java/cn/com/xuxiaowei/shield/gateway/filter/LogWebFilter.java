@@ -60,6 +60,8 @@ public class LogWebFilter implements WebFilter, Ordered {
 
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+	public static final String LOG_ID = LogWebFilter.class.getName() + ":logId";
+
 	private static final String SQL = "INSERT INTO `gateway_shield_log` "
 			+ " (`gateway_shield_log_id`, `request_id`, `scheme`, `host_name`, `host_address`, `network`, `system_organization`, `system_number`, `continent_code`, `continent_geo_name_id`, `continent_name`, `country_iso_code`, `country_geo_name_id`, `country_name`, `is_in_european_union`, `subdivision_iso_codes`, `subdivision_geo_name_ids`, `subdivision_names`, `city_geo_name_id`, `city_name`, `host`, `port`, `path`, `query`, `raw_query`, `type`, `user_agent`, `referer`, `headers_json`, `multipart_data_json`, `year`, `month`, `day`, `hour`, `minute`, `second`) "
 			+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -387,9 +389,12 @@ public class LogWebFilter implements WebFilter, Ordered {
 			}
 		}
 
+		String logId = UUID.randomUUID().toString();
+		exchange.getAttributes().put(LOG_ID, logId);
+
 		// @formatter:off
 		SqlParameterValue[] parameters = new SqlParameterValue[] {
-				new SqlParameterValue(Types.VARCHAR, UUID.randomUUID().toString()),
+				new SqlParameterValue(Types.VARCHAR, logId),
 				new SqlParameterValue(Types.VARCHAR, id),
 				new SqlParameterValue(Types.VARCHAR, scheme),
 				new SqlParameterValue(Types.VARCHAR, hostName),
