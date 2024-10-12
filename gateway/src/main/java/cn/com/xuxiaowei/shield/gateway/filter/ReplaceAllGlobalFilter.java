@@ -48,6 +48,8 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+	private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
+
 	public static final String REDIS_KEY = "replace-all:";
 
 	public static final String TYPE_REDIS_KEY = "replace-all-type";
@@ -100,7 +102,6 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 		String uriHost = uri.getHost();
 		String uriPath = uri.getPath();
 
-		AntPathMatcher antPathMatcher = new AntPathMatcher();
 		ServerHttpResponseDecorator decorator = new ServerHttpResponseDecorator(response) {
 			@NonNull
 			@Override
@@ -156,12 +157,12 @@ public class ReplaceAllGlobalFilter implements GlobalFilter, Ordered {
 							return;
 						}
 						String host = replaceAll.getHost();
-						if (antPathMatcher.match(host, uriHost)) {
+						if (ANT_PATH_MATCHER.match(host, uriHost)) {
 							String regex = replaceAll.getRegex();
 							String replacement = replaceAll.getReplacement();
 							List<String> patterns = replaceAll.getPatterns();
 							for (String pattern : patterns) {
-								if (antPathMatcher.match(pattern, uriPath)) {
+								if (ANT_PATH_MATCHER.match(pattern, uriPath)) {
 									result = result.replaceAll(regex, replacement);
 								}
 							}
