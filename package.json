@@ -21,6 +21,6 @@
     "vitepress"
   ],
   "devDependencies": {
-    "vitepress": "1.4.0"
+    "vitepress": "1.4.1"
   }
 }
