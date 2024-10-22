@@ -51,6 +51,7 @@ CREATE TABLE `gateway_shield_log`  (
   `referer` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '来源',
   `headers_json` json NOT NULL COMMENT '请求头',
   `multipart_data_json` json NOT NULL COMMENT '',
+  `request_body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `year` int(0) NOT NULL COMMENT '年',
   `month` int(0) NOT NULL COMMENT '月',
   `day` int(0) NOT NULL COMMENT '日',

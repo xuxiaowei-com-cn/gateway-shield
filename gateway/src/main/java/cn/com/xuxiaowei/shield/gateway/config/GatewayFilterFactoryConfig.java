@@ -3,12 +3,14 @@ package cn.com.xuxiaowei.shield.gateway.config;
 import cn.com.xuxiaowei.shield.gateway.filter.factory.AllowIPAccessGatewayFilterFactory;
 import cn.com.xuxiaowei.shield.gateway.filter.factory.ErrorWebExceptionGatewayFilterFactory;
 import cn.com.xuxiaowei.shield.gateway.filter.factory.JavaScriptAddResponseHeaderGatewayFilterFactory;
+import cn.com.xuxiaowei.shield.gateway.filter.factory.SaveRequestBodyDirectReturnGatewayFilterFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.config.GatewayAutoConfiguration;
 import org.springframework.cloud.gateway.config.conditional.ConditionalOnEnabledFilter;
 import org.springframework.cloud.gateway.filter.factory.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * 网关 过滤工厂
@@ -54,6 +56,13 @@ public class GatewayFilterFactoryConfig {
 	@ConditionalOnEnabledFilter
 	public ErrorWebExceptionGatewayFilterFactory errorWebExceptionGatewayFilterFactory() {
 		return new ErrorWebExceptionGatewayFilterFactory();
+	}
+
+	@Bean
+	@ConditionalOnEnabledFilter
+	public SaveRequestBodyDirectReturnGatewayFilterFactory saveRequestBodyDirectReturnGatewayFilterFactory(
+			JdbcTemplate jdbcTemplate) {
+		return new SaveRequestBodyDirectReturnGatewayFilterFactory(jdbcTemplate);
 	}
 
 }
