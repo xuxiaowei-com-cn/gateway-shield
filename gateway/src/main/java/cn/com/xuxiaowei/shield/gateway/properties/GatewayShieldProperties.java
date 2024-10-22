@@ -142,4 +142,9 @@ public class GatewayShieldProperties {
 	 */
 	private Boolean enableGatewayErrorWebExceptionHandler;
 
+	/**
+	 * 开启保存响应
+	 */
+	private Boolean enableSaveResponseBody;
+
 }

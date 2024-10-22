@@ -4,6 +4,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -41,6 +42,7 @@ import static cn.com.xuxiaowei.shield.gateway.utils.GzipUtils.decompressResponse
 @Slf4j
 @Setter
 @Component
+@ConditionalOnProperty(value = "gateway-shield.enable-save-response-body", havingValue = "true")
 public class SaveResponseBodyGlobalFilter implements GlobalFilter, Ordered {
 
 	public static final int ORDERED = Ordered.HIGHEST_PRECEDENCE;
