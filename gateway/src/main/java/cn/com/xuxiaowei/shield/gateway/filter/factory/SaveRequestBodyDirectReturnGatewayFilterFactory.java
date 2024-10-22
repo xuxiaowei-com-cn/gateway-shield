@@ -1,6 +1,7 @@
 package cn.com.xuxiaowei.shield.gateway.filter.factory;
 
 import cn.com.xuxiaowei.shield.gateway.filter.LogWebFilter;
+import com.google.common.base.Splitter;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -13,8 +14,10 @@ import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.SqlParameterValue;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.validation.annotation.Validated;
 
+import java.net.URI;
 import java.sql.Types;
 import java.util.List;
 
@@ -29,9 +32,11 @@ public class SaveRequestBodyDirectReturnGatewayFilterFactory
 
 	private final JdbcTemplate jdbcTemplate;
 
-	public static final String SAVE_REQUEST_BODY_DIRECT_RETURN_ID = "SaveRequestBodyDirectReturnId";
+	public static final String SAVE_REQUEST_BODY_DIRECT_RETURN_ID = "Save-Request-Body-Direct-Return-Id";
 
 	private static final String SQL = "UPDATE `gateway_shield_log` SET `request_body` = ? WHERE `gateway_shield_log_id` = ?";
+
+	private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
 
 	public SaveRequestBodyDirectReturnGatewayFilterFactory(JdbcTemplate jdbcTemplate) {
 		super(Config.class);
@@ -48,6 +53,14 @@ public class SaveRequestBodyDirectReturnGatewayFilterFactory
 		return (exchange, chain) -> {
 
 			ServerHttpRequest request = exchange.getRequest();
+
+			URI uri = request.getURI();
+			String path = uri.getPath();
+			String paths = config.getPaths();
+
+			if (!match(path, paths)) {
+				return chain.filter(exchange);
+			}
 
 			return request.getBody().collectList().flatMap(body -> {
 
@@ -81,6 +94,11 @@ public class SaveRequestBodyDirectReturnGatewayFilterFactory
 				return response.setComplete();
 			});
 		};
+	}
+
+	private boolean match(String path, String paths) {
+		List<String> patterns = Splitter.on(",").trimResults().splitToList(paths);
+		return patterns.stream().anyMatch(pattern -> ANT_PATH_MATCHER.match(pattern, path));
 	}
 
 	/**

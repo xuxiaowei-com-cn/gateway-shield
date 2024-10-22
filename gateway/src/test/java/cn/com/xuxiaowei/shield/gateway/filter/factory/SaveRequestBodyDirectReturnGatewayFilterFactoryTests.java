@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
         "spring.cloud.gateway.routes[0].uri=http://localhost:1111/",
 		"spring.cloud.gateway.routes[0].predicates[0]=Host=demo-SaveRequestBodyDirectReturn.localdev.me:*",
 		"spring.cloud.gateway.routes[0].filters[0].name=SaveRequestBodyDirectReturn",
-		"spring.cloud.gateway.routes[0].filters[0].args.paths=2208e015-e8a8-4e9d-96a9-f0e7ef0002ec",
+		"spring.cloud.gateway.routes[0].filters[0].args.paths=/2208e015-e8a8-4e9d-96a9-f0e7ef0002ec",
 })
 // @formatter:on
 class SaveRequestBodyDirectReturnGatewayFilterFactoryTests {
