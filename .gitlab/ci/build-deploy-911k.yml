@@ -12,6 +12,8 @@ build-deploy-911k:
     - docker images | grep gateway-shield | awk '{print $3}' | xargs docker rmi || echo
   environment: production/911k
   rules:
+    - if: $CI_SERVER_HOST == 'framagit.org'
+      when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   when: manual
   tags:
