@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
@@ -58,6 +59,8 @@ public class LogWebFilter implements WebFilter, Ordered {
 
 	public static final int ORDERED = Ordered.HIGHEST_PRECEDENCE;
 
+	public static final String REDIS_KEY = "skip_path_save";
+
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	public static final String LOG_ID = LogWebFilter.class.getName() + ":logId";
@@ -76,11 +79,18 @@ public class LogWebFilter implements WebFilter, Ordered {
 			// 127.0.0.1
 			"127.0.0.1/32");
 
+	private StringRedisTemplate stringRedisTemplate;
+
 	private JdbcTemplate jdbcTemplate;
 
 	private GatewayShieldProperties gatewayShieldProperties;
 
 	private int order = ORDERED;
+
+	@Autowired
+	public void setStringRedisTemplate(StringRedisTemplate stringRedisTemplate) {
+		this.stringRedisTemplate = stringRedisTemplate;
+	}
 
 	@Autowired
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
@@ -157,7 +167,14 @@ public class LogWebFilter implements WebFilter, Ordered {
 		// }
 		//
 		// try {
-		save(exchange, multipartDataMap);
+
+		Boolean hasKey = stringRedisTemplate.opsForHash().hasKey(REDIS_KEY, uri.toString());
+		if (hasKey) {
+			log.info("Redis 已存在跳过路径: {}，不保存到数据库", uri);
+		}
+		else {
+			save(exchange, multipartDataMap);
+		}
 		// }
 		// catch (JsonProcessingException e) {
 		// throw new RuntimeException(e);
